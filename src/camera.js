@@ -1,4 +1,4 @@
-export class Camera {
+ class Camera {
   constructor(canvas) {
     this.target = { x: 0, y: 0, z: 0 };
     this.position = { x: 0, y: 0, z: 0 }; // This will be overwritten by moveCamera() after a drag movement, to set start position use angle xy and xz

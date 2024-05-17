@@ -1,9 +1,7 @@
-import { APPROX } from "../../src/const.js";
-
 const cosf = Math.cos(Math.PI / 180.0);
 const sinf = Math.sin(Math.PI / 180.0);
 
-export class Ball {
+ class Ball {
   constructor(canvas, coinsPositionList, removeObject) {
     this.canvas = canvas;
     this.position = { x: 0, y: 0, z: 10 };

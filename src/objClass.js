@@ -1,9 +1,7 @@
-import { ObjLoader } from "./objLoader.js";
-
 // Created starting from
 // https://webgl2fundamentals.org/webgl/lessons/webgl-load-obj.html
 // https://webgl2fundamentals.org/webgl/lessons/webgl-load-obj-w-mtl.html
-export class ObjectClass {
+ class ObjectClass {
   constructor(name, filePath, center = { x: 0, y: 0, z: 0 }, visibility, mtlPath = null) {
     this.name = name;
     this.filePath = filePath;

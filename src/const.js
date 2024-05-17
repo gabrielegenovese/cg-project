@@ -91,5 +91,3 @@ const FS = `
 			effectiveOpacity);
 	}
 	`;
-
-export { APPROX, DEFLIGHTPOS, DEFLIGHTDIR, VS, FS };

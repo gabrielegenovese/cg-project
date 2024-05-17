@@ -1,7 +1,7 @@
 // Created starting from
 // https://webgl2fundamentals.org/webgl/lessons/webgl-load-obj.html
 // In .obj file line startings with v are positions, lines that start with vt are texture coordinates, and lines that start with vn are normals.
-export class ObjLoader {
+ class ObjLoader {
   static parseOBJ(text) {
     // Parse the OBJ file removing comments and empty lines
 

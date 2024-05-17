@@ -1,6 +1,4 @@
-import { DEFLIGHTPOS, DEFLIGHTDIR } from "./const.js";
-
-export class Light {
+ class Light {
   constructor() {
     this.position = structuredClone(DEFLIGHTPOS);
     this.direction = structuredClone(DEFLIGHTDIR);

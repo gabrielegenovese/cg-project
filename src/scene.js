@@ -1,9 +1,4 @@
-import { Ball } from "./ball.js";
-import { Light } from "./light.js";
-import { Camera } from "./camera.js";
-import { VS, FS } from "./const.js";
-
-export class Scene {
+class Scene {
   constructor(canvasName, objPositionList) {
     //Get canvas from canvas name
     const canvas = document.querySelector(canvasName);
