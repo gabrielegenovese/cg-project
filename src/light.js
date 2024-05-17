@@ -1,4 +1,4 @@
-import { DEFLIGHTPOS, DEFLIGHTDIR } from "./const.js";
+import { DEFLIGHTPOS, DEFLIGHTDIR } from "const.js";
 
 export class Light {
   constructor() {

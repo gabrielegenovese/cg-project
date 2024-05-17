@@ -1,5 +1,5 @@
-import { ObjectClass } from "./src/objClass.js";
-import { Scene } from "./src/scene.js";
+import { ObjectClass } from "src/objClass.js";
+import { Scene } from "src/scene.js";
 
 function getRndInteger(min, max) {
   var num = Math.floor(Math.random() * (max - min + 1)) + min;

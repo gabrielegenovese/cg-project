@@ -1,7 +1,7 @@
-import { Ball } from "./ball.js";
-import { Light } from "./light.js";
-import { Camera } from "./camera.js";
-import { VS, FS } from "./const.js";
+import { Ball } from "ball.js";
+import { Light } from "light.js";
+import { Camera } from "camera.js";
+import { VS, FS } from "const.js";
 
 export class Scene {
   constructor(canvasName, objPositionList) {
