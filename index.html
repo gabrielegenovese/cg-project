@@ -1,14 +1,62 @@
-<head>
-  <link rel="stylesheet" href="style.css">
-</head>
-<canvas id="canvas"></canvas>
-<!--
-for most samples webgl-utils only provides shader compiling/linking and
-canvas resizing because why clutter the examples with code that's the same in every sample.
-See https://webglfundamentals.org/webgl/lessons/webgl-boilerplate.html
-and https://webglfundamentals.org/webgl/lessons/webgl-resizing-the-canvas.html
-for webgl-utils, m3, m4, and webgl-lessons-ui.
--->
-<script src="https://webglfundamentals.org/webgl/resources/webgl-utils.js"></script>
-<script src="https://webglfundamentals.org/webgl/resources/m4.js"></script>
-<script src="./main.js"></script>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@4.11.1/dist/full.min.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <title>CG PROJECT</title>
+  </head>
+
+  <body>
+    <div class="min-h-screen bg-base-200">
+      <div class="text-3xl">CG project</div>
+      <div class="flex flex-col lg:flex-row">
+        <canvas class="m-2 w-9/12 h-5/12 rounded-lg shadow-2xl" id="screenCanvas"></canvas>
+        <div class="m-2" id="uiContainer">
+          <div class="text-2xl">Command Panel</div>
+          <div class="text-xl">Camera</div>
+          <div>
+            <input type="range" id="zoomCamera" name="zoomCamera" min="5" max="100" value="70" />
+            <label for="zoomCameraLabel">Fov Camera</label>
+            <button
+              class="btn btn-sm btn-primary"
+              id="defaultFovButton"
+              name="defaultFov"
+              type="button"
+            >
+              Set Default Fov
+            </button>
+          </div>
+          <div class="text-xl">Light</div>
+          <input type="range" id="xLight" name="xLight" min="-500" max="450" />
+          <label for="xLight">Light X direction</label><br />
+          <input type="range" id="yLight" name="yLight" min="-500" max="450" />
+          <label for="yLight">Light Y direction</label><br />
+          <input type="range" id="zLight" name="zLight" min="-500" max="450" />
+          <label for="zLight">Light Z direction</label><br />
+          <button
+            class="btn btn-sm btn-primary"
+            id="defaultLightButton"
+            name="defaultLight"
+            type="button"
+          >
+            Set Default Light
+          </button>
+          <div class="flex">
+            <label class="mr-2" for="transparencyCheckbox">Transparency</label>
+            <input type="checkbox" id="transparencyCheckbox" checked />
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+
+  <script src="./libs/m4.js"></script>
+  <script src="./libs/webgl-utils.js"></script>
+  <script type="module" src="./main.js"></script>
+</html>
