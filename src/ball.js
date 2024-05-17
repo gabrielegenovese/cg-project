@@ -1,4 +1,4 @@
-import { APPROX } from "const.js";
+import { APPROX } from "../../src/const.js";
 
 const cosf = Math.cos(Math.PI / 180.0);
 const sinf = Math.sin(Math.PI / 180.0);

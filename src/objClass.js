@@ -1,4 +1,4 @@
-import { ObjLoader } from "objLoader.js";
+import { ObjLoader } from "./objLoader.js";
 
 // Created starting from
 // https://webgl2fundamentals.org/webgl/lessons/webgl-load-obj.html
