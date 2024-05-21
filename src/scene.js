@@ -23,10 +23,10 @@ class Scene {
     this.camera = new Camera(this.gl.canvas);
     this.ball = new Ball(this.gl.canvas, this.objPositionList, this.removeObject.bind(this));
 
-    this.camera.setCameraTarget(this.ball.getPosition());
+    this.camera.setCameraTarget(this.ball.position.x, this.ball.position.y, this.ball.position.z);
 
     //Setting up controls for the camera and the ball
-    Camera.setCameraControls(this.gl.canvas, this.camera);
+    Camera.setCameraControls(this.gl.canvas, this.camera, this.ball);
     Ball.setBallControls(this.ball);
   }
 
@@ -52,12 +52,13 @@ class Scene {
 
     this.objList.forEach((obj) => {
       if (obj.name == "ball") {
-        this.ball.moveBall();
+        this.ball.moveBall(this.camera);
         obj.position.x = this.ball.getXPosition();
         obj.position.y = this.ball.getYPosition();
         obj.position.z = this.ball.getZPosition();
         obj.rotation.x = this.ball.getXRotation();
         obj.rotation.y = this.ball.getYRotation();
+        // console.log("ball", obj.position);
         this.camera.setCameraPosition({
           x: obj.position.x - 2,
           y: obj.position.y,
@@ -66,7 +67,7 @@ class Scene {
       }
 
       if (obj.name.startsWith("yellowCard")) {
-        obj.rotation.z += 0.001;
+        obj.rotation.z += 0.1;
       }
     });
 

@@ -41,7 +41,7 @@ function addCoins() {
 
 async function loadAllObjs(scene, coinsPositionList) {
   for (const element of coinsPositionList) {
-    var nameFile = element.name.startsWith("yellowCard") ? "fish" : element.name;
+    var nameFile = element.name.startsWith("yellowCard") ? "coin" : element.name;
     await scene.addObject(
       new ObjectClass(
         element.name,

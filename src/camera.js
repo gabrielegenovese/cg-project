@@ -1,4 +1,4 @@
- class Camera {
+class Camera {
   constructor(canvas) {
     this.target = { x: 0, y: 0, z: 0 };
     this.position = { x: 0, y: 0, z: 0 }; // This will be overwritten by moveCamera() after a drag movement, to set start position use angle xy and xz
@@ -19,6 +19,14 @@
     };
     this.movement = {
       delta: {
+        x: 0,
+        y: 0,
+      },
+      pos: {
+        x: 0,
+        y: 0,
+      },
+      old: {
         x: 0,
         y: 0,
       },
@@ -64,8 +72,10 @@
     return radToDeg(this.fovRad);
   }
 
-  setCameraTarget(target) {
-    this.target = target;
+  setCameraTarget(x, y, z) {
+    this.target.x = x;
+    this.target.y = y;
+    this.target.z = z;
   }
 
   setCameraPosition(position) {
@@ -158,6 +168,25 @@
     }
   }
 
+  moveCameraTarget() {
+    this.target.y += (this.movement.old.x - this.movement.pos.x) / 10;
+    this.target.z += (this.movement.old.y - this.movement.pos.y) / 10;
+  }
+
+  moveTargetByBall(way, move) {
+    switch (way) {
+      case "x":
+        this.target.x += move;
+        break;
+      case "y":
+        this.target.y += move;
+        break;
+      case "z":
+        this.target.z += move;
+        break;
+    }
+  }
+
   resetCamera() {
     this.movement.dragging = false;
     this.movement.angle.xy = this.defaultAngle.xy;
@@ -173,83 +202,26 @@
 
   //Set Camera event listeners
   static setCameraControls(canvas, camera) {
-    //Lock angle to be between 0 and maxRad. Zero to not going under the ground
-    function lockAngle(angle, maxRad) {
-      if (angle > maxRad) return maxRad;
-      if (angle < 0.01) return 0.01;
-      return angle;
-    }
+    canvas.addEventListener("mousedown", function (event) {
+      camera.movement.old.x = event.pageX;
+      camera.movement.old.y = event.pageY;
+      camera.movement.dragging = true;
+    });
 
-    if (
-      !/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
-    ) {
-      canvas.addEventListener("mousedown", function (event) {
-        camera.movement.old = {
-          x: event.pageX,
-          y: event.pageY,
-        };
-        camera.movement.dragging = true;
-      });
+    canvas.addEventListener("mouseup", function (event) {
+      camera.movement.dragging = false;
+    });
 
-      canvas.addEventListener("mouseup", function (event) {
-        camera.moveCamera();
-        camera.movement.dragging = false;
-      });
-
-      canvas.addEventListener("mousemove", function (event) {
-        if (!camera.movement.dragging) return;
-
-        // Compute drag delta
-        let deltaY = (-(event.pageY - camera.movement.old.y) * 2 * Math.PI) / canvas.height;
-        let deltaX = (-(event.pageX - camera.movement.old.x) * 2 * Math.PI) / canvas.width;
-
-        // Update camera angle
-        camera.movement.angle.xy = camera.movement.angle.xy + deltaX;
-        camera.movement.angle.xz = lockAngle(
-          camera.movement.angle.xz - deltaY,
-          Math.PI / 2 - 0.001
-        );
-        // Save current mouse position
-        camera.movement.old.x = event.pageX;
-        camera.movement.old.y = event.pageY;
-        camera.movement.updateCamera = true;
-      });
-    } else {
-      canvas.addEventListener("touchstart", function (event) {
-        camera.movement.old = {
-          x: event.touches[0].pageX,
-          y: event.touches[0].pageY,
-        };
-        camera.movement.dragging = true;
-      });
-
-      canvas.addEventListener("touchend", function (event) {
-        camera.moveCamera();
-        camera.movement.dragging = false;
-      });
-
-      canvas.addEventListener("touchmove", function (event) {
-        if (!camera.movement.dragging) return;
-
-        // Compute drag delta
-        let deltaX =
-          (-(event.touches[0].pageX - camera.movement.old.x) * 2 * Math.PI) / canvas.width;
-        let deltaY =
-          (-(event.touches[0].pageY - camera.movement.old.y) * 2 * Math.PI) / canvas.height;
-
-        // Update camera angle
-        camera.movement.angle.xy = camera.movement.angle.xy + deltaX;
-        camera.movement.angle.xz = lockAngle(
-          camera.movement.angle.xz - deltaY,
-          Math.PI / 2 - 0.001
-        );
-
-        // Save current mouse position
-        camera.movement.old.x = event.touches[0].pageX;
-        camera.movement.old.y = event.touches[0].pageY;
-        camera.movement.updateCamera = true;
-      });
-    }
+    canvas.addEventListener("mousemove", function (event) {
+      if (!camera.movement.dragging) return;
+      // Save current mouse position
+      camera.movement.pos.x = event.pageX;
+      camera.movement.pos.y = event.pageY;
+      camera.movement.updateCamera = true;
+      camera.moveCameraTarget();
+      camera.movement.old.x = event.pageX;
+      camera.movement.old.y = event.pageY;
+    });
   }
 }
 

@@ -1,10 +1,10 @@
 const cosf = Math.cos(Math.PI / 180.0);
 const sinf = Math.sin(Math.PI / 180.0);
 
- class Ball {
+class Ball {
   constructor(canvas, coinsPositionList, removeObject) {
     this.canvas = canvas;
-    this.position = { x: 0, y: 0, z: 10 };
+    this.position = { x: 0, y: 0, z: 1 };
     this.rotation = { x: 0, y: 0, z: 0 };
     this.speed = { x: 0, y: 0, z: 0 };
     this.jumping = 0;
@@ -50,7 +50,7 @@ const sinf = Math.sin(Math.PI / 180.0);
 
   // Do a physics step, independent from the rendering.
   // We can Read but never Write the structure controlled by moveBall()
-  moveBall() {
+  moveBall(camera) {
     // Speed in ball space
     var ballSpeed = { x: 0, y: 0, z: 0 };
     // From speed world frame to speed ball frame
@@ -73,11 +73,11 @@ const sinf = Math.sin(Math.PI / 180.0);
     }
 
     // Jumping logic
-    if (this.keyPressed.space && this.jumping == 0) {
+    if (this.keyPressed.space && this.jumping == 0 && this.position.z < 2) {
       ballSpeed.z += 1;
-      this.jumping = 4;
+      this.jumping = 8;
     } else if (this.jumping > 0) {
-      ballSpeed.z += 1;
+      if (this.jumping % 2 == 0) ballSpeed.z += 1;
       this.jumping--;
     } else if (this.jumping == 0) {
       ballSpeed.z -= 1; // apply gravity
@@ -92,7 +92,7 @@ const sinf = Math.sin(Math.PI / 180.0);
     this.speed.y = -sinf * ballSpeed.x + cosf * ballSpeed.y;
     this.speed.z = ballSpeed.z;
 
-    this.collisionCheckerUpdate(this.speed.x, this.speed.y, this.speed.z);
+    this.collisionCheckerUpdate(camera, this.speed.x, this.speed.y, this.speed.z);
 
     // Rotation handling
     if (this.speed.x != 0) this.rotation.y += this.speed.x;
@@ -102,13 +102,18 @@ const sinf = Math.sin(Math.PI / 180.0);
     else this.rotation.x = 0;
   }
 
-  async collisionCheckerUpdate(speedX, speedY, speedZ) {
+  async collisionCheckerUpdate(camera, speedX, speedY, speedZ) {
     // Check not exceeding borders
-    if (this.position.x + speedX < 19 && this.position.x + speedX > -19.5)
+    if (this.position.x + speedX < 19 && this.position.x + speedX > -19.5) {
+      camera.moveTargetByBall("x", speedX);
       this.position.x += speedX;
-    if (this.position.y + speedY < 9.5 && this.position.y + speedY > -9.5)
+    }
+    if (this.position.y + speedY < 9.5 && this.position.y + speedY > -9.5) {
+      camera.moveTargetByBall("y", speedY);
       this.position.y += speedY;
+    }
     if (this.position.z + speedZ < 20 && this.position.z + speedZ > 0) {
+      camera.moveTargetByBall("z", speedZ);
       this.position.z += speedZ;
     } else if (speedZ < 0 && this.position.z + speedZ > 0) {
       this.position.z = 0.1;
