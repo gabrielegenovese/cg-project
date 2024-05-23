@@ -2,7 +2,7 @@ const cosf = Math.cos(Math.PI / 180.0);
 const sinf = Math.sin(Math.PI / 180.0);
 
 class Ball {
-  constructor(canvas, coinsPositionList, removeObject) {
+  constructor(canvas, coinsPositionList, cubesPos, removeObject) {
     this.canvas = canvas;
     this.position = { x: 0, y: 0, z: 1 };
     this.rotation = { x: 0, y: 0, z: 0 };
@@ -14,10 +14,11 @@ class Ball {
     this.frictionX = 0.7;
     this.frictionY = 0.7;
     this.maxSpeed = 0.5;
-    this.maxAcceleration = 0.4;
+    this.maxAcceleration = 0.1;
     // Number of cards gathered and list of objects positions
     this.coinsGathered = 0;
     this.coinsPositionList = coinsPositionList;
+    this.cubesPos = cubesPos;
 
     // Dict to track which key is being pressed
     this.keyPressed = { w: false, a: false, s: false, d: false, space: false, shift: false };
@@ -119,6 +120,22 @@ class Ball {
       this.position.z = 0.1;
     }
     // Cards Gathering
+    for (const element of this.cubesPos) {
+      if (areTwoCubeNear(this.position, element)) {
+        if (this.position.x + speedX < 19 && this.position.x + speedX > -19.5) {
+          this.position.x -= speedX;
+          camera.moveTargetByBall("x", (-speedX));
+        }
+        if (this.position.y + speedY < 9.5 && this.position.y + speedY > -9.5) {
+          this.position.y -= speedY;
+          camera.moveTargetByBall("y", (-speedY));
+        }
+        if (this.position.z + speedZ < 20 && this.position.z + speedZ > 0) {
+          this.position.z -= speedZ;
+          camera.moveTargetByBall("z", (-speedZ));
+        }
+      }
+    }
     for (const element of this.coinsPositionList) {
       if (
         element.name.startsWith("yellowCard") &&
@@ -191,7 +208,18 @@ function areTwoObjsNear(pos1, pos2) {
     pos1.x >= pos2.x - APPROX &&
     pos1.y <= pos2.y + APPROX &&
     pos1.y >= pos2.y - APPROX &&
-    pos1.z >= pos2.z + APPROX &&
+    pos1.z <= pos2.z + APPROX &&
+    pos1.z >= pos2.z - APPROX
+  );
+}
+
+function areTwoCubeNear(pos1, pos2) {
+  return (
+    pos1.x <= pos2.x + APPROX &&
+    pos1.x >= pos2.x - APPROX &&
+    pos1.y <= pos2.y + APPROX &&
+    pos1.y >= pos2.y - APPROX &&
+    pos1.z <= pos2.z + APPROX &&
     pos1.z >= pos2.z - APPROX
   );
 }

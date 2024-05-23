@@ -1,4 +1,4 @@
-const APPROX = 0.5;
+const APPROX = 1;
 const DEFLIGHTPOS = { x: 0, y: 100, z: 350 };
 const DEFLIGHTDIR = { x: -1, y: 3, z: 5 };
 

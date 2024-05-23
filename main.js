@@ -19,29 +19,29 @@ function addCoins() {
     name: "yellowCard_1",
     x: getRndInteger(-10, 10),
     y: getRndInteger(-8, 8),
-    z: getRndInteger(1, 5),
+    z: getRndInteger(1, 2),
     visibility: true,
   });
   positionList.push({
     name: "yellowCard_2",
     x: getRndInteger(-10, 10),
     y: getRndInteger(-8, 8),
-    z: getRndInteger(1, 5),
+    z: getRndInteger(1, 2),
     visibility: true,
   });
   positionList.push({
     name: "yellowCard_3",
     x: getRndInteger(-10, 10),
     y: getRndInteger(-8, 8),
-    z: getRndInteger(1, 5),
+    z: getRndInteger(1, 2),
     visibility: true,
   });
   return positionList;
 }
 
-async function loadAllObjs(scene, coinsPositionList) {
+async function loadAllObjs(scene, coinsPositionList, cubesPos) {
   for (const element of coinsPositionList) {
-    var nameFile = element.name.startsWith("yellowCard") ? "coin" : element.name;
+    var nameFile = element.name.startsWith("yellowCard") ? "mycoin" : element.name;
     await scene.addObject(
       new ObjectClass(
         element.name,
@@ -54,6 +54,10 @@ async function loadAllObjs(scene, coinsPositionList) {
 
   await scene.addObject(new ObjectClass("plane", "./objs/Plane.obj", { x: 0, y: 0, z: 0 }, true));
   await scene.addObject(new ObjectClass("ball", "./objs/Ball.obj", { x: 0, y: 0, z: 1 }, true));
+
+  // cubes
+  var cube1 = cubesPos[0];
+  await scene.addObject(new ObjectClass("redcube", "./objs/redcube2.obj", cube1, true));
   // await scene.addObject(
   //   new ObjectClass("scene", "./objs/Scena2.obj", { x: 0, y: 0, z: 0 }, true)
   // );
@@ -61,9 +65,10 @@ async function loadAllObjs(scene, coinsPositionList) {
 
 async function main() {
   var coinsPositionList = addCoins();
-  const scene = new Scene("#screenCanvas", coinsPositionList);
+  var cubesPos = [{ name: "redcube", x: 4, y: 2, z: 1 }];
+  const scene = new Scene("#screenCanvas", coinsPositionList, cubesPos);
 
-  await loadAllObjs(scene, coinsPositionList);
+  await loadAllObjs(scene, coinsPositionList, cubesPos);
 
   async function render(time) {
     // convert to seconds

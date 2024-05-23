@@ -1,5 +1,5 @@
 class Scene {
-  constructor(canvasName, objPositionList) {
+  constructor(canvasName, objPositionList, cubesPos) {
     //Get canvas from canvas name
     const canvas = document.querySelector(canvasName);
     if (!canvas) {
@@ -18,10 +18,16 @@ class Scene {
     //Set up the position of all objects in the scene
     this.objList = [];
     this.objPositionList = objPositionList;
+    this.cubesPos = cubesPos;
     //Set up the camera and the ball
     this.light = new Light();
     this.camera = new Camera(this.gl.canvas);
-    this.ball = new Ball(this.gl.canvas, this.objPositionList, this.removeObject.bind(this));
+    this.ball = new Ball(
+      this.gl.canvas,
+      this.objPositionList,
+      cubesPos,
+      this.removeObject.bind(this)
+    );
 
     this.camera.setCameraTarget(this.ball.position.x, this.ball.position.y, this.ball.position.z);
 
@@ -67,7 +73,7 @@ class Scene {
       }
 
       if (obj.name.startsWith("yellowCard")) {
-        obj.rotation.z += 0.1;
+        obj.rotation.z += 0.01;
       }
     });
 
