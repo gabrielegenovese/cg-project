@@ -58,6 +58,7 @@ class Ball {
     ballSpeed.x = +cosf * this.speed.x - sinf * this.speed.y;
     ballSpeed.y = +sinf * this.speed.x + cosf * this.speed.y;
 
+    // Key movement
     if (this.keyPressed.w) {
       if (ballSpeed.x + this.maxAcceleration <= this.maxSpeed) ballSpeed.x += this.maxAcceleration;
       this.rotation.x = 0; // Reset rotation
@@ -74,14 +75,17 @@ class Ball {
     }
 
     // Jumping logic
-    if (this.keyPressed.space && this.jumping == 0 && this.position.z < 2) {
-      ballSpeed.z += 1;
-      this.jumping = 8;
-    } else if (this.jumping > 0) {
-      if (this.jumping % 2 == 0) ballSpeed.z += 1;
-      this.jumping--;
-    } else if (this.jumping == 0) {
-      ballSpeed.z -= 1; // apply gravity
+    if (this.isJumping()) {
+      if (this.jumping % 2 == 0) ballSpeed.z += 1; // smooth jump
+      this.jumping--; // decrese jumping ticks
+    } else {
+      if (this.keyPressed.space && this.canBallJump()) {
+        ballSpeed.z += 1;
+        this.jumping = 8;
+      } else if (!isOnCube(this.position, this.cubesPos)) {
+        // apply gravity
+        ballSpeed.z -= 1;
+      }
     }
 
     // Friction handling
@@ -103,50 +107,82 @@ class Ball {
     else this.rotation.x = 0;
   }
 
+  isJumping() {
+    return this.jumping != 0;
+  }
+
+  canBallJump() {
+    return this.position.z < 1.1 || isOnCube(this.position, this.cubesPos);
+  }
+
   async collisionCheckerUpdate(camera, speedX, speedY, speedZ) {
     // Check not exceeding borders
-    if (this.position.x + speedX < 19 && this.position.x + speedX > -19.5) {
+    this.checkBordersCollition(camera, speedX, speedY, speedZ);
+
+    // Manage collition with cubes
+    for (const cubePos of this.cubesPos) {
+      this.checkCubeCollition(camera, cubePos, speedX, speedY, speedZ);
+    }
+
+    // coins gathering
+    for (const coinPos of this.coinsPositionList) {
+      this.checkCoinsCollition(coinPos);
+    }
+  }
+
+  checkBordersCollition(camera, speedX, speedY, speedZ) {
+    if (this.position.x + speedX < LIMITX.upper && this.position.x + speedX > LIMITX.lower) {
       camera.moveTargetByBall("x", speedX);
       this.position.x += speedX;
     }
-    if (this.position.y + speedY < 9.5 && this.position.y + speedY > -9.5) {
+    if (this.position.y + speedY < LIMITY.upper && this.position.y + speedY > LIMITX.lower) {
       camera.moveTargetByBall("y", speedY);
       this.position.y += speedY;
     }
-    if (this.position.z + speedZ < 20 && this.position.z + speedZ > 0) {
+    if (this.position.z + speedZ < LIMITZ.upper && this.position.z + speedZ > LIMITZ.lower) {
       camera.moveTargetByBall("z", speedZ);
       this.position.z += speedZ;
     } else if (speedZ < 0 && this.position.z + speedZ > 0) {
       this.position.z = 0.1;
     }
-    // Cards Gathering
-    for (const element of this.cubesPos) {
-      if (areTwoCubeNear(this.position, element)) {
-        if (this.position.x + speedX < 19 && this.position.x + speedX > -19.5) {
-          this.position.x -= speedX;
-          camera.moveTargetByBall("x", (-speedX));
-        }
-        if (this.position.y + speedY < 9.5 && this.position.y + speedY > -9.5) {
-          this.position.y -= speedY;
-          camera.moveTargetByBall("y", (-speedY));
-        }
-        if (this.position.z + speedZ < 20 && this.position.z + speedZ > 0) {
-          this.position.z -= speedZ;
-          camera.moveTargetByBall("z", (-speedZ));
-        }
+  }
+
+  checkCoinsCollition(coinPos) {
+    if (
+      coinPos.name.startsWith("goldenCoin") &&
+      coinPos.visibility == true &&
+      areTwoObjsNear(this.position, coinPos)
+    ) {
+      // check if sound is muted
+      if (!document.querySelector("#soundCheckbox").checked) {
+        var audio = new Audio("../objs/coin/coin.wav");
+        audio.play();
       }
+      this.removeObject(coinPos.name);
+      this.coinsGathered += 1;
+      // remove coinPos from coinsPositionList
+      this.coinsPositionList.indexOf(coinPos);
+      this.coinsPositionList.splice(this.coinsPositionList.indexOf(coinPos), 1);
     }
-    for (const element of this.coinsPositionList) {
-      if (
-        element.name.startsWith("yellowCard") &&
-        element.visibility == true &&
-        areTwoObjsNear(this.position, element)
-      ) {
-        this.removeObject(element.name);
-        this.coinsGathered += 1;
-        // remove element from coinsPositionList
-        this.coinsPositionList.indexOf(element);
-        this.coinsPositionList.splice(this.coinsPositionList.indexOf(element), 1);
+  }
+
+  checkCubeCollition(camera, pos2, speedX, speedY, speedZ) {
+    if (areTwoObjsNear(this.position, pos2)) {
+      const pos1 = this.position;
+
+      if (pos1.z <= pos2.z && pos1.z >= pos2.z + 1) {
+        this.position.z -= speedZ;
+        camera.moveTargetByBall("z", -speedZ);
+      } else {
+        if (pos1.x <= pos2.x + APPROX && pos1.x >= pos2.x - APPROX) {
+          this.position.x -= speedX;
+          camera.moveTargetByBall("x", -speedX);
+        }
+
+        if (pos1.y <= pos2.y + APPROX && pos1.y >= pos2.y - APPROX) {
+          this.position.y -= speedY;
+          camera.moveTargetByBall("y", -speedY);
+        }
       }
     }
   }
@@ -208,18 +244,42 @@ function areTwoObjsNear(pos1, pos2) {
     pos1.x >= pos2.x - APPROX &&
     pos1.y <= pos2.y + APPROX &&
     pos1.y >= pos2.y - APPROX &&
-    pos1.z <= pos2.z + APPROX &&
-    pos1.z >= pos2.z - APPROX
+    pos1.z <= pos2.z + 0.5 &&
+    pos1.z >= pos2.z - 0.5
   );
 }
 
-function areTwoCubeNear(pos1, pos2) {
-  return (
-    pos1.x <= pos2.x + APPROX &&
-    pos1.x >= pos2.x - APPROX &&
-    pos1.y <= pos2.y + APPROX &&
-    pos1.y >= pos2.y - APPROX &&
-    pos1.z <= pos2.z + APPROX &&
-    pos1.z >= pos2.z - APPROX
-  );
+
+function isOnCube(position, cubesPositionList) {
+  let can = false;
+
+  for (const cubePos of cubesPositionList) {
+    function isBallOnTopCube(pos1, pos2) {
+      return (
+        pos1.x <= pos2.x + APPROX &&
+        pos1.x >= pos2.x - APPROX &&
+        pos1.y <= pos2.y + APPROX &&
+        pos1.y >= pos2.y - APPROX &&
+        pos1.z <= pos2.z + 1.1
+      );
+    }
+
+    // wip
+    function isBallUnderCube(pos1, pos2) {
+      return (
+        pos1.x <= pos2.x + APPROX &&
+        pos1.x >= pos2.x - APPROX &&
+        pos1.y <= pos2.y + APPROX &&
+        pos1.y >= pos2.y - APPROX &&
+        pos1.z <= pos2.z + 0.5 &&
+        pos1.z >= pos2.z - 5
+      );
+    }
+
+    if (isBallUnderCube(position, cubePos)) return false;
+
+    can = can || isBallOnTopCube(position, cubePos);
+  }
+
+  return can;
 }

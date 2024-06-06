@@ -64,7 +64,6 @@ class Scene {
         obj.position.z = this.ball.getZPosition();
         obj.rotation.x = this.ball.getXRotation();
         obj.rotation.y = this.ball.getYRotation();
-        // console.log("ball", obj.position);
         this.camera.setCameraPosition({
           x: obj.position.x - 2,
           y: obj.position.y,
@@ -72,7 +71,8 @@ class Scene {
         });
       }
 
-      if (obj.name.startsWith("yellowCard")) {
+      // rotate coins
+      if (obj.name.startsWith("goldenCoin")) {
         obj.rotation.z += 0.01;
       }
     });

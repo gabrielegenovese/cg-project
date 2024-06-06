@@ -1,6 +1,9 @@
 const APPROX = 1;
 const DEFLIGHTPOS = { x: 0, y: 100, z: 350 };
 const DEFLIGHTDIR = { x: -1, y: 3, z: 5 };
+const LIMITX = { lower: -40, upper: 40};
+const LIMITY = { lower: -40, upper: 40};
+const LIMITZ = { lower: 0, upper: 20};
 
 const VS = `
 	attribute vec4 a_position; 
