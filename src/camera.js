@@ -192,8 +192,9 @@ class Camera {
     this.movement.angle.xy = this.defaultAngle.xy;
     this.movement.angle.xz = this.defaultAngle.xz;
     this.movement.updateCamera = true;
-    this.setFov(4010); //Equivalent to 70 rad
-    document.getElementById("zoomCamera").value = 70;
+    var fov = 70;
+    this.setFov(radToDeg(fov));
+    document.getElementById("zoomCamera").value = fov;
     this.setRadius(50);
     this.rearCamera = false;
     this.upCamera = false;
@@ -221,6 +222,16 @@ class Camera {
       camera.moveCameraTarget();
       camera.movement.old.x = event.pageX;
       camera.movement.old.y = event.pageY;
+    });
+
+    canvas.addEventListener("wheel", function (event) {
+      var fov = parseInt(document.getElementById("zoomCamera").value);
+      const delta = Math.sign(event.deltaY);
+      if ((delta > 0 && fov < 100) || (delta < 0 && fov > 5)) {
+        fov += delta;
+      }
+      document.getElementById("zoomCamera").value = fov;
+      camera.setFov(fov);
     });
   }
 }

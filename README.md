@@ -6,13 +6,11 @@ Project for the Computer Graphics Course yy. 2023/2024 at Alma Mater Studiorum -
 
 Implentare:
 
-[] skybox
-[] oggetti con trasparenza
-[] suoni
-[] fullscreen
-[] impostazioni
-[] tempo/classifica
-[] oggetto freccia
+- oggetti con trasparenza
+- suoni
+- impostazioni
+- tempo/classifica
+- oggetto freccia
 
 ## How to run
 
