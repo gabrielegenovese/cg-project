@@ -135,6 +135,18 @@ class Scene {
         canvas.requestFullscreen();
       }
     });
+
+    // manage audio
+    var audio = document.getElementById("myaudio");
+    var muteCheckbox = document.getElementById("soundCheckbox");
+
+    muteCheckbox.addEventListener("change", function () {
+      if (audio.paused) {
+        audio.play();
+      } else {
+        audio.pause();
+      }
+    });
   }
 
   //Add an object to the environment after loading its mesh
