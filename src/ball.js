@@ -112,7 +112,7 @@ class Ball {
   }
 
   canBallJump() {
-    return this.position.z < 1.1 || isOnCube(this.position, this.cubesPos);
+    return this.position.z < 2.1 || isOnCube(this.position, this.cubesPos);
   }
 
   async collisionCheckerUpdate(camera, speedX, speedY, speedZ) {
@@ -142,8 +142,6 @@ class Ball {
     if (this.position.z + speedZ < LIMITZ.upper && this.position.z + speedZ > LIMITZ.lower) {
       camera.moveTargetByBall("z", speedZ);
       this.position.z += speedZ;
-    } else if (speedZ < 0 && this.position.z + speedZ > 0) {
-      this.position.z = 0.1;
     }
   }
 
@@ -156,6 +154,7 @@ class Ball {
       // check if sound is muted
       if (!document.querySelector("#soundCheckbox").checked) {
         var audio = new Audio("../objs/coin/coin.wav");
+        audio.volume = 0.2;
         audio.play();
       }
       this.removeObject(coinPos.name);
@@ -248,7 +247,6 @@ function areTwoObjsNear(pos1, pos2) {
     pos1.z >= pos2.z - 0.5
   );
 }
-
 
 function isOnCube(position, cubesPositionList) {
   let can = false;

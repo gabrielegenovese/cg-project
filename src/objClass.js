@@ -1,7 +1,7 @@
 // Created starting from
 // https://webgl2fundamentals.org/webgl/lessons/webgl-load-obj.html
 // https://webgl2fundamentals.org/webgl/lessons/webgl-load-obj-w-mtl.html
- class ObjectClass {
+class ObjectClass {
   constructor(name, filePath, center = { x: 0, y: 0, z: 0 }, visibility = true, mtlPath = null) {
     this.name = name;
     this.filePath = filePath;
@@ -145,6 +145,10 @@
         u_world = m4.translate(u_world, this.position.x, this.position.y, this.position.z);
       }
 
+      if (this.name == "tree") {
+        u_world = m4.scale(u_world, 3, 3, 3);
+        u_world = m4.xRotate(u_world, 1.5);
+      }
       if (this.rotation) {
         if (this.rotation.x != 0) {
           u_world = m4.xRotate(u_world, this.rotation.x);

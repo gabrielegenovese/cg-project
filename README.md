@@ -7,9 +7,9 @@ Project for the Computer Graphics Course yy. 2023/2024 at Alma Mater Studiorum -
 Implentare:
 
 - 1 vetro con trasparenza
-- 3/4 alberi
 - migliora impostazioni
 - tempo/classifica
+- loading screen
 - documentazione
 
 ## How to run

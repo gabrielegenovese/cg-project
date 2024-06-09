@@ -13,21 +13,15 @@ class Scene {
       return;
     }
 
-    //Compiles and links the shaders, looks up attribute and uniform locations
+    //Com piles and links the shaders, looks up attribute and uniform locations
     this.programInfo = webglUtils.createProgramInfo(this.gl, [VS, FS]);
     //Set up the position of all objects in the scene
     this.objList = [];
-    this.objPositionList = objPositionList;
     this.cubesPos = cubesPos;
     //Set up the camera and the ball
     this.light = new Light();
     this.camera = new Camera(this.gl.canvas);
-    this.ball = new Ball(
-      this.gl.canvas,
-      this.objPositionList,
-      cubesPos,
-      this.removeObject.bind(this)
-    );
+    this.ball = new Ball(this.gl.canvas, objPositionList, cubesPos, this.removeObject.bind(this));
 
     this.camera.setCameraTarget(this.ball.position.x, this.ball.position.y, this.ball.position.z);
 
@@ -70,27 +64,27 @@ class Scene {
     const faceInfos = [
       {
         target: this.gl.TEXTURE_CUBE_MAP_POSITIVE_X,
-        url: "objs/skybox/clouds.jpg",
+        url: "objs/skybox/1.png",
       },
       {
         target: this.gl.TEXTURE_CUBE_MAP_NEGATIVE_X,
-        url: "objs/skybox/clouds.jpg",
+        url: "objs/skybox/2.png",
       },
       {
         target: this.gl.TEXTURE_CUBE_MAP_POSITIVE_Y,
-        url: "objs/skybox/clouds.jpg",
+        url: "objs/skybox/6.png",
       },
       {
         target: this.gl.TEXTURE_CUBE_MAP_NEGATIVE_Y,
-        url: "objs/skybox/clouds.jpg",
+        url: "objs/skybox/5.png",
       },
       {
         target: this.gl.TEXTURE_CUBE_MAP_POSITIVE_Z,
-        url: "objs/skybox/clouds.jpg",
+        url: "objs/skybox/4.png",
       },
       {
         target: this.gl.TEXTURE_CUBE_MAP_NEGATIVE_Z,
-        url: "objs/skybox/clouds.jpg",
+        url: "objs/skybox/3.png",
       },
     ];
 
@@ -139,6 +133,7 @@ class Scene {
     // manage audio
     var audio = document.getElementById("myaudio");
     var muteCheckbox = document.getElementById("soundCheckbox");
+    audio.volume = 0.2;
 
     muteCheckbox.addEventListener("change", function () {
       if (audio.paused) {
