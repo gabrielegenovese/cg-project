@@ -2,13 +2,13 @@
 // https://webgl2fundamentals.org/webgl/lessons/webgl-load-obj.html
 // https://webgl2fundamentals.org/webgl/lessons/webgl-load-obj-w-mtl.html
 class ObjectClass {
-  constructor(name, filePath, center = { x: 0, y: 0, z: 0 }, visibility = true, mtlPath = null) {
+  constructor(name, filePath, center = { x: 0, y: 0, z: 0 }, start_rot = 0, mtlPath = null) {
     this.name = name;
     this.filePath = filePath;
     this.position = center;
     this.rotation = { x: 0, y: 0, z: 0 };
     this.oldPosition = this.position;
-    this.visibility = visibility;
+    this.start_rot = start_rot;
     if (mtlPath) this.mtlPath = mtlPath;
   }
 
@@ -126,58 +126,57 @@ class ObjectClass {
   }
 
   render(gl, meshProgramInfo, uniforms) {
-    if (this.visibility) {
-      gl.useProgram(meshProgramInfo.program);
+    gl.useProgram(meshProgramInfo.program);
+
+    // calls gl.uniform
+    webglUtils.setUniforms(meshProgramInfo, uniforms);
+    // compute the world matrix once since all parts
+    // are at the same space.
+    let u_world = m4.identity();
+
+    // Handle object translation
+    if (
+      this.position.x != this.oldPosition.x ||
+      this.position.y != this.oldPosition.y ||
+      this.position.z != 0
+    ) {
+      this.oldPosition = this.position;
+      u_world = m4.translate(u_world, this.position.x, this.position.y, this.position.z);
+    }
+
+    if (this.name == "tree") {
+      u_world = m4.scale(u_world, 3, 3, 3);
+      u_world = m4.xRotate(u_world, 1.5);
+      u_world = m4.yRotate(u_world, this.start_rot);
+    }
+    if (this.rotation) {
+      if (this.rotation.x != 0) {
+        u_world = m4.xRotate(u_world, this.rotation.x);
+      }
+      if (this.rotation.y != 0) {
+        u_world = m4.yRotate(u_world, this.rotation.y);
+      }
+      if (this.rotation.z != 0) {
+        u_world = m4.zRotate(u_world, this.rotation.z);
+      }
+    }
+
+    for (const { bufferInfo, material } of this.parts) {
+      // calls gl.bindBuffer, gl.enableVertexAttribArray, gl.vertexAttribPointer
+      webglUtils.setBuffersAndAttributes(gl, meshProgramInfo, bufferInfo);
 
       // calls gl.uniform
-      webglUtils.setUniforms(meshProgramInfo, uniforms);
-      // compute the world matrix once since all parts
-      // are at the same space.
-      let u_world = m4.identity();
+      webglUtils.setUniforms(
+        meshProgramInfo,
+        {
+          u_world,
+          u_worldInverseTranspose: m4.transpose(m4.inverse(u_world)),
+        },
+        material
+      );
 
-      // Handle object translation
-      if (
-        this.position.x != this.oldPosition.x ||
-        this.position.y != this.oldPosition.y ||
-        this.position.z != 0
-      ) {
-        this.oldPosition = this.position;
-        u_world = m4.translate(u_world, this.position.x, this.position.y, this.position.z);
-      }
-
-      if (this.name == "tree") {
-        u_world = m4.scale(u_world, 3, 3, 3);
-        u_world = m4.xRotate(u_world, 1.5);
-      }
-      if (this.rotation) {
-        if (this.rotation.x != 0) {
-          u_world = m4.xRotate(u_world, this.rotation.x);
-        }
-        if (this.rotation.y != 0) {
-          u_world = m4.yRotate(u_world, this.rotation.y);
-        }
-        if (this.rotation.z != 0) {
-          u_world = m4.zRotate(u_world, this.rotation.z);
-        }
-      }
-
-      for (const { bufferInfo, material } of this.parts) {
-        // calls gl.bindBuffer, gl.enableVertexAttribArray, gl.vertexAttribPointer
-        webglUtils.setBuffersAndAttributes(gl, meshProgramInfo, bufferInfo);
-
-        // calls gl.uniform
-        webglUtils.setUniforms(
-          meshProgramInfo,
-          {
-            u_world,
-            u_worldInverseTranspose: m4.transpose(m4.inverse(u_world)),
-          },
-          material
-        );
-
-        // calls gl.drawArrays or gl.drawElements
-        webglUtils.drawBufferInfo(gl, bufferInfo);
-      }
+      // calls gl.drawArrays or gl.drawElements
+      webglUtils.drawBufferInfo(gl, bufferInfo);
     }
   }
 }

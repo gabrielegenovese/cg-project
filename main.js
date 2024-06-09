@@ -53,14 +53,18 @@ async function loadAllObjs(scene, coinsPositionList, cubesPos) {
 
   await scene.addObject(new ObjectClass("plane", "./objs/floor/floor3.obj", { x: 0, y: 0, z: 0 }));
   // add trees
-  // todo: mettere 20
-  for (let i = 0; i < 20; i++) {
+  for (let i = 0; i < 100; i++) {
     await scene.addObject(
-      new ObjectClass("tree", "./objs/tree/birch_tree.obj", {
-        x: getRndInteger(-40, 40),
-        y: getRndInteger(-40, 40),
-        z: -1,
-      })
+      new ObjectClass(
+        "tree",
+        "./objs/tree/birch_tree.obj",
+        {
+          x: getRndInteger(-40, 40),
+          y: getRndInteger(-40, 40),
+          z: -1,
+        },
+        Math.random()*degToRad(360)
+      )
     );
   }
 
@@ -73,6 +77,8 @@ async function loadAllObjs(scene, coinsPositionList, cubesPos) {
 }
 
 async function main() {
+  loading_modal.showModal();
+
   var coinsPositionList = addCoins();
   var cubesPos = [
     { name: "redcube", x: 4, y: 2, z: 2 },
@@ -81,6 +87,8 @@ async function main() {
   const scene = new Scene("#screenCanvas", coinsPositionList, cubesPos);
 
   await loadAllObjs(scene, coinsPositionList, cubesPos);
+
+  loading_modal.close();
 
   async function render(time) {
     // convert to seconds

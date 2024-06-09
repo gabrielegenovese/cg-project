@@ -203,28 +203,41 @@ class Camera {
 
   //Set Camera event listeners
   static setCameraControls(canvas, camera) {
-    canvas.addEventListener("mousedown", function (event) {
-      camera.movement.old.x = event.pageX;
-      camera.movement.old.y = event.pageY;
-      camera.movement.dragging = true;
+    var moveCameraStart = "mousedown touchstart";
+    moveCameraStart.split(" ").forEach((e) => {
+      canvas.addEventListener(e, function (event) {
+        event.preventDefault();
+        camera.movement.old.x = event.pageX;
+        camera.movement.old.y = event.pageY;
+        camera.movement.dragging = true;
+      });
     });
 
-    canvas.addEventListener("mouseup", function (event) {
-      camera.movement.dragging = false;
+    var moveCameraEnd = "mouseup touchend";
+    moveCameraEnd.split(" ").forEach((e) => {
+      canvas.addEventListener(e, function (event) {
+        event.preventDefault();
+        camera.movement.dragging = false;
+      });
     });
 
-    canvas.addEventListener("mousemove", function (event) {
-      if (!camera.movement.dragging) return;
-      // Save current mouse position
-      camera.movement.pos.x = event.pageX;
-      camera.movement.pos.y = event.pageY;
-      camera.movement.updateCamera = true;
-      camera.moveCameraTarget();
-      camera.movement.old.x = event.pageX;
-      camera.movement.old.y = event.pageY;
+    var moveCameraMove = "mousemove touchmove";
+    moveCameraMove.split(" ").forEach((e) => {
+      canvas.addEventListener(e, function (event) {
+        event.preventDefault();
+        if (!camera.movement.dragging) return;
+        // Save current mouse position
+        camera.movement.pos.x = event.pageX;
+        camera.movement.pos.y = event.pageY;
+        camera.movement.updateCamera = true;
+        camera.moveCameraTarget();
+        camera.movement.old.x = event.pageX;
+        camera.movement.old.y = event.pageY;
+      });
     });
 
     canvas.addEventListener("wheel", function (event) {
+      event.preventDefault();
       var fov = parseInt(document.getElementById("zoomCamera").value);
       const delta = Math.sign(event.deltaY);
       if ((delta > 0 && fov < 100) || (delta < 0 && fov > 5)) {

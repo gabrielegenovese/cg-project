@@ -24,6 +24,101 @@ class Ball {
     this.keyPressed = { w: false, a: false, s: false, d: false, space: false, shift: false };
     // Function binded whit the SceneHandler environment to delete the object from the scene
     this.removeObject = removeObject;
+
+    this.initControllBtn();
+  }
+
+  initControllBtn() {
+    var start = "mousedown touchstart";
+    var end = "mouseup touchend";
+    const goForward = function (event) {
+      event.preventDefault();
+      this.keyPressed.w = true;
+    }.bind(this);
+    const stopForward = function (event) {
+      event.preventDefault();
+      this.keyPressed.w = false;
+    }.bind(this);
+    const goBackward = function (event) {
+      event.preventDefault();
+      this.keyPressed.s = true;
+    }.bind(this);
+    const stopBackward = function (event) {
+      event.preventDefault();
+      this.keyPressed.s = false;
+    }.bind(this);
+    const goRight = function (event) {
+      event.preventDefault();
+      this.keyPressed.d = true;
+    }.bind(this);
+    const stopRight = function (event) {
+      event.preventDefault();
+      this.keyPressed.d = false;
+    }.bind(this);
+    const goLeft = function (event) {
+      event.preventDefault();
+      this.keyPressed.a = true;
+    }.bind(this);
+    const stopLeft = function (event) {
+      event.preventDefault();
+      this.keyPressed.a = false;
+    }.bind(this);
+    const goJump = function (event) {
+      event.preventDefault();
+      this.keyPressed.space = true;
+    }.bind(this);
+    const stopJump = function (event) {
+      event.preventDefault();
+      this.keyPressed.space = false;
+    }.bind(this);
+
+    var funList = [
+      goForward,
+      stopForward,
+      goBackward,
+      stopBackward,
+      goRight,
+      stopRight,
+      goLeft,
+      stopLeft,
+      goJump,
+      stopJump,
+    ];
+
+    start.split(" ").forEach((e) => {
+      document.getElementById("w-btn").addEventListener(e, goForward);
+    });
+    end.split(" ").forEach((e) => {
+      document.getElementById("w-btn").addEventListener(e, stopForward);
+    });
+
+    start.split(" ").forEach((e) => {
+      document.getElementById("s-btn").addEventListener(e, goBackward);
+    });
+    end.split(" ").forEach((e) => {
+      document.getElementById("s-btn").addEventListener(e, stopBackward);
+    });
+
+    start.split(" ").forEach((e) => {
+      document.getElementById("d-btn").addEventListener(e, goRight);
+    });
+    end.split(" ").forEach((e) => {
+      document.getElementById("d-btn").addEventListener(e, stopRight);
+    });
+
+    start.split(" ").forEach((e) => {
+      document.getElementById("a-btn").addEventListener(e, goLeft);
+    });
+    end.split(" ").forEach((e) => {
+      document.getElementById("a-btn").addEventListener(e, stopLeft);
+    });
+
+    start.split(" ").forEach((e) => {
+      document.getElementById("space-btn").addEventListener(e, goJump);
+    });
+    end.split(" ").forEach((e) => {
+      document.getElementById("space-btn").addEventListener(e, stopJump);
+    });
   }
 
   getPosition() {
@@ -115,7 +210,7 @@ class Ball {
     return this.position.z < 2.1 || isOnCube(this.position, this.cubesPos);
   }
 
-  async collisionCheckerUpdate(camera, speedX, speedY, speedZ) {
+  collisionCheckerUpdate(camera, speedX, speedY, speedZ) {
     // Check not exceeding borders
     this.checkBordersCollition(camera, speedX, speedY, speedZ);
 
@@ -187,7 +282,8 @@ class Ball {
   }
 
   static setBallControls(ball) {
-    window.addEventListener("keydown", function (event) {
+    window.addEventListener("keydown", (event) => {
+      event.preventDefault();
       switch (event.key) {
         case "w":
           ball.keyPressed.w = true;
@@ -211,7 +307,8 @@ class Ball {
       }
     });
 
-    window.addEventListener("keyup", function (event) {
+    window.addEventListener("keyup", (event) => {
+      event.preventDefault();
       switch (event.key) {
         case "w":
           ball.keyPressed.w = false;

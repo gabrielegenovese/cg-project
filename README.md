@@ -9,8 +9,8 @@ Implentare:
 - 1 vetro con trasparenza
 - migliora impostazioni
 - tempo/classifica
-- loading screen
 - documentazione
+- test mobile
 
 ## How to run
 
