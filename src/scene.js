@@ -1,5 +1,5 @@
 class Scene {
-  constructor(canvasName, objPositionList, cubesPos) {
+  constructor(canvasName) {
     //Get canvas from canvas name
     const canvas = document.querySelector(canvasName);
     if (!canvas) {
@@ -17,11 +17,10 @@ class Scene {
     this.programInfo = webglUtils.createProgramInfo(this.gl, [VS, FS]);
     //Set up the position of all objects in the scene
     this.objList = [];
-    this.cubesPos = cubesPos;
     //Set up the camera and the ball
     this.light = new Light();
     this.camera = new Camera(this.gl.canvas);
-    this.ball = new Ball(this.gl.canvas, objPositionList, cubesPos, this.removeObject.bind(this));
+    this.ball = new Ball(this.gl.canvas, this.removeObject.bind(this));
 
     this.camera.setCameraTarget(this.ball.position.x, this.ball.position.y, this.ball.position.z);
 
@@ -147,10 +146,14 @@ class Scene {
   //Add an object to the environment after loading its mesh
   async addObject(obj) {
     this.objList.push(obj);
+    this.ball.setObjList(this.objList);
     await obj.loadMesh(this.gl);
   }
   removeObject(objName) {
-    this.objList = this.objList.filter((obj) => obj.name != objName);
+    this.objList = this.objList.filter((obj) => {
+      var name = obj.getName();
+      return name != objName;
+    });
   }
 
   render(time) {
@@ -192,7 +195,7 @@ class Scene {
       }
 
       // rotate coins
-      if (obj.name.startsWith("goldenCoin")) {
+      if (obj.name.startsWith("coin")) {
         obj.rotation.z += 0.01;
       }
     });

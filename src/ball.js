@@ -2,7 +2,7 @@ const cosf = Math.cos(Math.PI / 180.0);
 const sinf = Math.sin(Math.PI / 180.0);
 
 class Ball {
-  constructor(canvas, coinsPositionList, cubesPos, removeObject) {
+  constructor(canvas, removeObject) {
     this.canvas = canvas;
     this.position = { x: 0, y: 0, z: 1 };
     this.rotation = { x: 0, y: 0, z: 0 };
@@ -17,8 +17,7 @@ class Ball {
     this.maxAcceleration = 0.1;
     // Number of cards gathered and list of objects positions
     this.coinsGathered = 0;
-    this.coinsPositionList = coinsPositionList;
-    this.cubesPos = cubesPos;
+    this.objList = [];
 
     // Dict to track which key is being pressed
     this.keyPressed = { w: false, a: false, s: false, d: false, space: false, shift: false };
@@ -26,6 +25,10 @@ class Ball {
     this.removeObject = removeObject;
 
     this.initControllBtn();
+  }
+
+  setObjList(objList) {
+    this.objList = objList;
   }
 
   initControllBtn() {
@@ -177,7 +180,7 @@ class Ball {
       if (this.keyPressed.space && this.canBallJump()) {
         ballSpeed.z += 1;
         this.jumping = 8;
-      } else if (!isOnCube(this.position, this.cubesPos)) {
+      } else if (!this.isOnCube()) {
         // apply gravity
         ballSpeed.z -= 1;
       }
@@ -207,21 +210,19 @@ class Ball {
   }
 
   canBallJump() {
-    return this.position.z < 2.1 || isOnCube(this.position, this.cubesPos);
+    return this.position.z < 1.1 || this.isOnCube();
   }
 
   collisionCheckerUpdate(camera, speedX, speedY, speedZ) {
     // Check not exceeding borders
     this.checkBordersCollition(camera, speedX, speedY, speedZ);
 
-    // Manage collition with cubes
-    for (const cubePos of this.cubesPos) {
-      this.checkCubeCollition(camera, cubePos, speedX, speedY, speedZ);
-    }
-
-    // coins gathering
-    for (const coinPos of this.coinsPositionList) {
-      this.checkCoinsCollition(coinPos);
+    // Manage collition with objects
+    for (const obj of this.objList) {
+      const name = obj.getName();
+      const pos = obj.getPosition();
+      if (name == "cube") this.checkCubeCollition(camera, pos, speedX, speedY, speedZ);
+      if (name.startsWith("coin")) this.checkCoinsCollition(obj);
     }
   }
 
@@ -240,45 +241,73 @@ class Ball {
     }
   }
 
-  checkCoinsCollition(coinPos) {
-    if (
-      coinPos.name.startsWith("goldenCoin") &&
-      coinPos.visibility == true &&
-      areTwoObjsNear(this.position, coinPos)
-    ) {
-      // check if sound is muted
-      if (!document.querySelector("#soundCheckbox").checked) {
-        var audio = new Audio("../objs/coin/coin.wav");
-        audio.volume = 0.2;
-        audio.play();
-      }
-      this.removeObject(coinPos.name);
+  checkCoinsCollition(obj) {
+    const name = obj.getName();
+    const coinPos = obj.getPosition();
+    if (areTwoObjsNear(this.position, coinPos)) {
+      playCoinSound();
+      this.removeObject(name);
       this.coinsGathered += 1;
-      // remove coinPos from coinsPositionList
-      this.coinsPositionList.indexOf(coinPos);
-      this.coinsPositionList.splice(this.coinsPositionList.indexOf(coinPos), 1);
+      // remove coinPos from objList
+      this.objList.splice(this.objList.indexOf(obj), 1);
     }
   }
 
-  checkCubeCollition(camera, pos2, speedX, speedY, speedZ) {
-    if (areTwoObjsNear(this.position, pos2)) {
-      const pos1 = this.position;
-
-      if (pos1.z <= pos2.z && pos1.z >= pos2.z + 1) {
-        this.position.z -= speedZ;
+  checkCubeCollition(camera, cubePos, speedX, speedY, speedZ) {
+    const ballPos = this.position;
+    if (areTwoObjsNear(ballPos, cubePos)) {
+      if (ballPos.z <= cubePos.z && ballPos.z >= cubePos.z + 1) {
+        this.position.z = -speedZ;
         camera.moveTargetByBall("z", -speedZ);
       } else {
-        if (pos1.x <= pos2.x + APPROX && pos1.x >= pos2.x - APPROX) {
+        if (ballPos.x <= cubePos.x + APPROX && ballPos.x >= cubePos.x - APPROX) {
           this.position.x -= speedX;
           camera.moveTargetByBall("x", -speedX);
         }
-
-        if (pos1.y <= pos2.y + APPROX && pos1.y >= pos2.y - APPROX) {
+        if (ballPos.y <= cubePos.y + APPROX && ballPos.y >= cubePos.y - APPROX) {
           this.position.y -= speedY;
           camera.moveTargetByBall("y", -speedY);
         }
       }
     }
+  }
+
+  isOnCube() {
+    let can = false;
+
+    for (const obj of this.objList) {
+      const name = obj.getName();
+      if (name == "cube") {
+        const cubePos = obj.getPosition();
+
+        function isBallOnTopCube(pos1, pos2) {
+          return (
+            pos1.x <= pos2.x + APPROX &&
+            pos1.x >= pos2.x - APPROX &&
+            pos1.y <= pos2.y + APPROX &&
+            pos1.y >= pos2.y - APPROX &&
+            pos1.z <= pos2.z + 1.1
+          );
+        }
+
+        function isBallUnderCube(pos1, pos2) {
+          return (
+            pos1.x <= pos2.x + APPROX &&
+            pos1.x >= pos2.x - APPROX &&
+            pos1.y <= pos2.y + APPROX &&
+            pos1.y >= pos2.y - APPROX &&
+            pos1.z <= pos2.z + 0.5 &&
+            pos1.z >= pos2.z - 5
+          );
+        }
+
+        if (isBallUnderCube(this.position, cubePos)) return false;
+
+        can = can || isBallOnTopCube(this.position, cubePos);
+      }
+    }
+
+    return can;
   }
 
   static setBallControls(ball) {
@@ -345,36 +374,11 @@ function areTwoObjsNear(pos1, pos2) {
   );
 }
 
-function isOnCube(position, cubesPositionList) {
-  let can = false;
-
-  for (const cubePos of cubesPositionList) {
-    function isBallOnTopCube(pos1, pos2) {
-      return (
-        pos1.x <= pos2.x + APPROX &&
-        pos1.x >= pos2.x - APPROX &&
-        pos1.y <= pos2.y + APPROX &&
-        pos1.y >= pos2.y - APPROX &&
-        pos1.z <= pos2.z + 1.1
-      );
-    }
-
-    // wip
-    function isBallUnderCube(pos1, pos2) {
-      return (
-        pos1.x <= pos2.x + APPROX &&
-        pos1.x >= pos2.x - APPROX &&
-        pos1.y <= pos2.y + APPROX &&
-        pos1.y >= pos2.y - APPROX &&
-        pos1.z <= pos2.z + 0.5 &&
-        pos1.z >= pos2.z - 5
-      );
-    }
-
-    if (isBallUnderCube(position, cubePos)) return false;
-
-    can = can || isBallOnTopCube(position, cubePos);
+function playCoinSound() {
+  // check if sound is muted
+  if (!document.querySelector("#soundCheckbox").checked) {
+    var audio = new Audio("../objs/coin/coin.wav");
+    audio.volume = 0.2;
+    audio.play();
   }
-
-  return can;
 }

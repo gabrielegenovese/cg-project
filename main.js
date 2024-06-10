@@ -16,77 +16,89 @@ function checkIfPositionFree(x, y, positionList) {
 function addCoins() {
   var positionList = [];
   positionList.push({
-    name: "goldenCoin_1",
+    name: "coin_1",
     x: getRndInteger(-10, 10),
     y: getRndInteger(-8, 8),
     z: getRndInteger(2, 4),
-    visibility: true,
   });
   positionList.push({
-    name: "goldenCoin_2",
+    name: "coin_2",
     x: getRndInteger(-10, 10),
     y: getRndInteger(-8, 8),
     z: getRndInteger(2, 4),
-    visibility: true,
   });
   positionList.push({
-    name: "goldenCoin_3",
+    name: "coin_3",
     x: getRndInteger(-10, 10),
     y: getRndInteger(-8, 8),
     z: getRndInteger(2, 4),
-    visibility: true,
   });
   return positionList;
 }
 
-async function loadAllObjs(scene, coinsPositionList, cubesPos) {
-  for (const element of coinsPositionList) {
-    var nameFile = element.name.startsWith("goldenCoin") ? "coin/mycoin" : element.name;
-    await scene.addObject(
-      new ObjectClass(element.name, "./objs/" + nameFile + ".obj", {
-        x: element.x,
-        y: element.y,
-        z: element.z,
-      })
-    );
+async function fetchObjAndMtl(objInfo) {
+  const objResponse = await fetch(objInfo.basePath + ".obj");
+  objInfo.objText = await objResponse.text();
+  const mtlResponse = await fetch(objInfo.basePath + ".mtl");
+  objInfo.mtlText = await mtlResponse.text();
+  return objInfo;
+}
+
+async function loadAllObjs(scene, coinPosList, cubesPos) {
+  // add coins
+  var coinInfo = { basePath: "objs/coin/mycoin" };
+  coinInfo = await fetchObjAndMtl(coinInfo);
+  for (const pos of coinPosList) {
+    await scene.addObject(new ObjectClass(pos.name, pos, coinInfo));
   }
 
-  await scene.addObject(new ObjectClass("plane", "./objs/floor/floor3.obj", { x: 0, y: 0, z: 0 }));
+  // add floor
+  var floorInfo = { basePath: "objs/floor/floor3" };
+  floorInfo = await fetchObjAndMtl(floorInfo);
+  await scene.addObject(new ObjectClass("floor", { x: 0, y: 0, z: 0 }, floorInfo));
+
   // add trees
-  for (let i = 0; i < 100; i++) {
+  var treeInfo = { basePath: "objs/tree/birch_tree" };
+  treeInfo = await fetchObjAndMtl(treeInfo);
+  for (let i = 0; i < 10; i++) {
     await scene.addObject(
       new ObjectClass(
         "tree",
-        "./objs/tree/birch_tree.obj",
         {
           x: getRndInteger(-40, 40),
           y: getRndInteger(-40, 40),
           z: -1,
         },
-        Math.random()*degToRad(360)
+        treeInfo,
+        Math.random() * degToRad(360)
       )
     );
   }
 
-  await scene.addObject(new ObjectClass("ball", "./objs/ball/ball.obj", { x: 0, y: 0, z: 0 }));
-  // cubes
-  var cube1 = cubesPos[0];
-  var cube2 = cubesPos[1];
-  await scene.addObject(new ObjectClass("redcube", "./objs/cube/redcube.obj", cube1));
-  await scene.addObject(new ObjectClass("redcube", "./objs/cube/redcube.obj", cube2));
+  // add ball
+  var ballInfo = { basePath: "objs/ball/ball" };
+  ballInfo = await fetchObjAndMtl(ballInfo);
+  await scene.addObject(new ObjectClass("ball", { x: 0, y: 0, z: 0 }, ballInfo));
+
+  // add cubes
+  var cubeInfo = { basePath: "objs/cube/redcube" };
+  cubeInfo = await fetchObjAndMtl(cubeInfo);
+  for (const pos of cubesPos) {
+    await scene.addObject(new ObjectClass("cube", pos, cubeInfo));
+  }
 }
 
 async function main() {
   loading_modal.showModal();
 
-  var coinsPositionList = addCoins();
+  var coinPosList = addCoins();
   var cubesPos = [
-    { name: "redcube", x: 4, y: 2, z: 2 },
-    { name: "redcube", x: 4, y: 3, z: 3 },
+    { x: 4, y: 2, z: 1 },
+    { x: 4, y: 3, z: 2 },
   ];
-  const scene = new Scene("#screenCanvas", coinsPositionList, cubesPos);
+  const scene = new Scene("#screenCanvas");
 
-  await loadAllObjs(scene, coinsPositionList, cubesPos);
+  await loadAllObjs(scene, coinPosList, cubesPos);
 
   loading_modal.close();
 

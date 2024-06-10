@@ -2,40 +2,45 @@
 // https://webgl2fundamentals.org/webgl/lessons/webgl-load-obj.html
 // https://webgl2fundamentals.org/webgl/lessons/webgl-load-obj-w-mtl.html
 class ObjectClass {
-  constructor(name, filePath, center = { x: 0, y: 0, z: 0 }, start_rot = 0, mtlPath = null) {
+  constructor(
+    name,
+    start_pos = { x: 0, y: 0, z: 0 },
+    objInfo = {
+      objPath: null,
+      objText: null,
+      mtlText: null,
+      mtlPath: null,
+      textureText: null,
+      texturePath: null,
+    },
+    start_rot = 0
+  ) {
     this.name = name;
-    this.filePath = filePath;
-    this.position = center;
+    this.position = start_pos;
     this.rotation = { x: 0, y: 0, z: 0 };
-    this.oldPosition = this.position;
     this.start_rot = start_rot;
-    if (mtlPath) this.mtlPath = mtlPath;
+    this.objInfo = objInfo;
+  }
+
+  getName() {
+    return this.name;
+  }
+
+  getPosition() {
+    return this.position;
   }
 
   async loadMesh(gl) {
-    // Load OBJ file
-    const objResponse = await fetch(this.filePath);
-    const objText = await objResponse.text();
-    //Load Mesh from OBJ file
-    const obj = ObjLoader.parseOBJ(objText);
+    var materials;
+    var obj;
+    var basePath = this.objInfo.basePath;
+    var baseHref = new URL(basePath, window.location.href);
 
-    // Load MTL file
-    const baseHref = new URL(this.filePath, window.location.href);
-    let materials;
-    if (!this.mtlPath) {
-      const matTexts = await Promise.all(
-        obj.materialLibs.map(async (filename) => {
-          const matHref = new URL(filename, baseHref).href;
-          const response = await fetch(matHref);
-          return await response.text();
-        })
-      );
-      materials = ObjLoader.parseMTL(matTexts.join("\n"));
-    } else {
-      const mtlResponse = await fetch(this.mtlPath);
-      const mtlText = await mtlResponse.text();
-      materials = ObjLoader.parseMTL(mtlText);
-    }
+    //Load Mesh from OBJ file
+    obj = ObjLoader.parseOBJ(this.objInfo.objText);
+
+    // obj.materialLibs = this.objInfo.mtlText;
+    materials = ObjLoader.parseMTL(this.objInfo.mtlText);
 
     const textures = {
       defaultWhite: ObjLoader.create1PixelTexture(gl, [255, 255, 255, 255]), //Nedeed for materials without textures
@@ -134,15 +139,7 @@ class ObjectClass {
     // are at the same space.
     let u_world = m4.identity();
 
-    // Handle object translation
-    if (
-      this.position.x != this.oldPosition.x ||
-      this.position.y != this.oldPosition.y ||
-      this.position.z != 0
-    ) {
-      this.oldPosition = this.position;
-      u_world = m4.translate(u_world, this.position.x, this.position.y, this.position.z);
-    }
+    u_world = m4.translate(u_world, this.position.x, this.position.y, this.position.z);
 
     if (this.name == "tree") {
       u_world = m4.scale(u_world, 3, 3, 3);
