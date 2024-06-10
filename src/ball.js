@@ -25,21 +25,33 @@ class Ball {
     this.removeObject = removeObject;
 
     this.initControllBtn();
+
+    this.start_timer = 0;
+    this.timer = 0;
+    this.win = false;
   }
 
   setObjList(objList) {
     this.objList = objList;
   }
 
+  getWin() {
+    return this.win;
+  }
+
   initControllBtn() {
     var start = "mousedown touchstart";
     var end = "mouseup touchend";
+    const checkTimer = () => {
+      if (this.start_timer == 0) this.start_timer = Date.now();
+    };
     const goForward = function (event) {
       event.preventDefault();
       this.keyPressed.w = true;
     }.bind(this);
     const stopForward = function (event) {
       event.preventDefault();
+      checkTimer();
       this.keyPressed.w = false;
     }.bind(this);
     const goBackward = function (event) {
@@ -48,6 +60,7 @@ class Ball {
     }.bind(this);
     const stopBackward = function (event) {
       event.preventDefault();
+      checkTimer();
       this.keyPressed.s = false;
     }.bind(this);
     const goRight = function (event) {
@@ -56,6 +69,7 @@ class Ball {
     }.bind(this);
     const stopRight = function (event) {
       event.preventDefault();
+      checkTimer();
       this.keyPressed.d = false;
     }.bind(this);
     const goLeft = function (event) {
@@ -64,6 +78,7 @@ class Ball {
     }.bind(this);
     const stopLeft = function (event) {
       event.preventDefault();
+      checkTimer();
       this.keyPressed.a = false;
     }.bind(this);
     const goJump = function (event) {
@@ -72,6 +87,7 @@ class Ball {
     }.bind(this);
     const stopJump = function (event) {
       event.preventDefault();
+      checkTimer();
       this.keyPressed.space = false;
     }.bind(this);
 
@@ -150,6 +166,12 @@ class Ball {
   // Do a physics step, independent from the rendering.
   // We can Read but never Write the structure controlled by moveBall()
   moveBall(camera) {
+    if (this.start_timer != 0 && this.start_timer != -1) {
+      const now = Date.now();
+      const seconds = (now - this.start_timer) / 1000;
+      this.timer = Math.round(seconds);
+      document.getElementById("timer").innerHTML = this.timer;
+    }
     // Speed in ball space
     var ballSpeed = { x: 0, y: 0, z: 0 };
     // From speed world frame to speed ball frame
@@ -248,6 +270,12 @@ class Ball {
       playCoinSound();
       this.removeObject(name);
       this.coinsGathered += 1;
+      document.getElementById("coins-counter").innerHTML = this.coinsGathered;
+      if (this.coinsGathered == 3) {
+        this.start_timer = -1;
+        document.getElementById("final-timer").innerHTML = this.timer;
+        final_modal.showModal();
+      }
       // remove coinPos from objList
       this.objList.splice(this.objList.indexOf(obj), 1);
     }
@@ -286,7 +314,8 @@ class Ball {
             pos1.x >= pos2.x - APPROX &&
             pos1.y <= pos2.y + APPROX &&
             pos1.y >= pos2.y - APPROX &&
-            pos1.z <= pos2.z + 1.1
+            pos1.z <= pos2.z + 1.3 &&
+            pos1.z >= pos2.z + 0.1
           );
         }
 
@@ -297,7 +326,7 @@ class Ball {
             pos1.y <= pos2.y + APPROX &&
             pos1.y >= pos2.y - APPROX &&
             pos1.z <= pos2.z + 0.5 &&
-            pos1.z >= pos2.z - 5
+            pos1.z >= pos2.z - 0.5
           );
         }
 
@@ -338,6 +367,9 @@ class Ball {
 
     window.addEventListener("keyup", (event) => {
       event.preventDefault();
+      if (ball.start_timer == 0) {
+        ball.start_timer = Date.now();
+      }
       switch (event.key) {
         case "w":
           ball.keyPressed.w = false;

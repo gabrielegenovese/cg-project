@@ -1,9 +1,9 @@
 const APPROX = 1;
 const DEFLIGHTPOS = { x: 0, y: 100, z: 350 };
 const DEFLIGHTDIR = { x: -1, y: 3, z: 5 };
-const LIMITX = { lower: -40, upper: 40};
-const LIMITY = { lower: -40, upper: 40};
-const LIMITZ = { lower: 0, upper: 20};
+const LIMITX = { lower: -40, upper: 40 };
+const LIMITY = { lower: -40, upper: 40 };
+const LIMITZ = { lower: 0, upper: 40 };
 
 const VS = `
 	attribute vec4 a_position; 
@@ -14,15 +14,15 @@ const VS = `
 	uniform mat4 u_projection; 
 	uniform mat4 u_view;      
 	uniform mat4 u_world;    
-	uniform vec3 u_lightPosition;  //point lighting
+	uniform vec3 u_lightPosition; 
 	uniform vec3 u_viewWorldPosition; 
 	uniform vec3 u_lightWorldPosition;
-	uniform mat4 u_worldInverseTranspose; //point lighting
+	uniform mat4 u_worldInverseTranspose;
   
 	varying vec2 v_texcoord;        
 	varying vec3 v_normal;	
 	varying vec3 v_surfaceToView; 
-	varying vec3 v_surfaceToLight; //point lighting
+	varying vec3 v_surfaceToLight;
 	varying vec4 v_color;  
   
 	void main() {
@@ -32,9 +32,9 @@ const VS = `
 	  v_texcoord = a_texcoord; 
 	  v_normal = mat3(u_worldInverseTranspose) * a_normal;  
 	  // compute the world position of the surface
-	  vec3 surfaceWorldPosition = (u_world * a_position).xyz; //point lighting
-	  v_surfaceToLight = u_lightWorldPosition - surfaceWorldPosition; //point lighting 
-	  v_surfaceToView = u_viewWorldPosition - surfaceWorldPosition; //point lighting 
+	  vec3 surfaceWorldPosition = (u_world * a_position).xyz;
+	  v_surfaceToLight = u_lightWorldPosition - surfaceWorldPosition; 
+	  v_surfaceToView = u_viewWorldPosition - surfaceWorldPosition; 
 	  v_color = a_color; 		
 	}
 	`;
@@ -46,7 +46,7 @@ const FS = `
 	varying vec3 v_normal;  			
 	varying vec3 v_surfaceToView; 		
 	varying vec4 v_color;				 
-	varying vec3 v_surfaceToLight; //point lighting
+	varying vec3 v_surfaceToLight;
 	
 	uniform vec3 diffuse;    			  	
 	uniform vec3 ambient;				  
@@ -76,7 +76,6 @@ const FS = `
 		vec3 surfaceToViewDirection = normalize(v_surfaceToView);          		
 		vec3 halfVector = normalize(surfaceToLightDirection + surfaceToViewDirection);   
 		
-		// compute the light by taking the dot product of the normal to the light's reverse direction
 		float light = dot(v_normal, surfaceToLightDirection);                     
 		float specularLight = dot(normal, halfVector);  				
 		vec4 specularMapColor = texture2D(specularMap, v_texcoord);

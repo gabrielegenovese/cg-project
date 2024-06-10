@@ -12,12 +12,22 @@
     <title>CG PROJECT</title>
   </head>
 
-  
   <body>
     <dialog id="loading_modal" class="modal">
       <div class="modal-box">
         <h3 class="font-bold text-lg">Loading!</h3>
         <p class="py-4">Wait a bit please...</p>
+      </div>
+    </dialog>
+    <dialog id="final_modal" class="modal">
+      <div class="modal-box">
+        <h3 class="font-bold text-lg">Nice!</h3>
+        <p class="py-4">You collected all the coins in <span id="final-timer"></span> seconds!</p>
+        <div class="modal-action">
+          <form method="dialog">
+            <button class="btn">Close</button>
+          </form>
+        </div>
       </div>
     </dialog>
     <div class="min-h-screen bg-base-200">
@@ -104,6 +114,16 @@
             <input type="checkbox" id="soundCheckbox" checked />
           </div>
           <button id="fullscreenBtn" class="btn btn-primary m-2">Fullscreen</button>
+          <div class="divider"></div>
+          <div class="text-xl mb-2">Data</div>
+          <div class="mb-2">
+            Timer:
+            <span class="ml-2" id="timer">0</span> s
+          </div>
+          <div class="mb-2">
+            Coin collected:
+            <span class="ml-2" id="coins-counter">0</span>/3
+          </div>
         </div>
       </div>
     </div>

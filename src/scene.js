@@ -1,35 +1,32 @@
 class Scene {
   constructor(canvasName) {
-    //Get canvas from canvas name
+    // init webgl components
     const canvas = document.querySelector(canvasName);
     if (!canvas) {
       console.error("Can't find canvas " + canvasName);
       return;
     }
-    //Create a WebGL2RenderingContext
     this.gl = canvas.getContext("webgl2");
     if (!this.gl) {
       console.error("Can't initialize WebGL2 on canvas " + canvasName);
       return;
     }
 
-    //Com piles and links the shaders, looks up attribute and uniform locations
     this.programInfo = webglUtils.createProgramInfo(this.gl, [VS, FS]);
-    //Set up the position of all objects in the scene
+
+    // init main objects
     this.objList = [];
-    //Set up the camera and the ball
     this.light = new Light();
     this.camera = new Camera(this.gl.canvas);
     this.ball = new Ball(this.gl.canvas, this.removeObject.bind(this));
 
     this.camera.setCameraTarget(this.ball.position.x, this.ball.position.y, this.ball.position.z);
 
-    //Setting up controls for the camera and the ball
+    // setting up controls for the camera and the ball
     Camera.setCameraControls(this.gl.canvas, this.camera, this.ball);
     Ball.setBallControls(this.ball);
 
     this.initSkybox(canvasName);
-
     this.initListeners(canvasName);
   }
 
@@ -168,9 +165,9 @@ class Scene {
     this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
 
     this.moveObjects();
-
+    const shered = this.camera.getSharedUniforms(this.light);
     this.objList.forEach((obj) => {
-      obj.render(this.gl, this.programInfo, this.camera.getSharedUniforms(this.light));
+      obj.render(this.gl, this.programInfo, shered);
     });
 
     this.renderSkybox();
