@@ -27,12 +27,12 @@ async function loadAllObjs(scene, coinPosList, cubesPos) {
   // add trees
   var treeInfo = { basePath: "objs/tree/birch_tree" };
   treeInfo = await fetchObjAndMtl(treeInfo);
-  for (let i = 0; i < 50; i++) {
+  for (let i = 0; i < 30; i++) {
     await scene.addObject(
       new ObjectClass(
         "tree",
         {
-          x: getRndInteger(-40, 40),
+          x: getRndInteger(-20, 40),
           y: getRndInteger(-40, 40),
           z: -1,
         },
@@ -65,13 +65,9 @@ async function main() {
   ];
   var cubesPos = [
     // first coin
-    { x: 4, y: 5, z: 1 },
     { x: 5, y: 5, z: 2 },
-    { x: 6, y: 5, z: 3 },
     { x: 7, y: 5, z: 4 },
-    { x: 8, y: 5, z: 5 },
     { x: 9, y: 5, z: 6 },
-    { x: 10, y: 5, z: 7 },
     { x: 11, y: 5, z: 8 },
     { x: 12, y: 7, z: 8 },
     { x: 12, y: 10, z: 8 },
@@ -79,22 +75,15 @@ async function main() {
     { x: 12, y: 16, z: 8 },
     { x: 12, y: 19, z: 8 },
     // second coin
-    { x: 20, y: -5, z: 1 },
     { x: 21, y: -5, z: 2 },
-    { x: 22, y: -5, z: 3 },
     { x: 23, y: -5, z: 4 },
-    { x: 24, y: -5, z: 5 },
     { x: 25, y: -5, z: 6 },
 
     { x: 25, y: -6, z: 8 },
-    { x: 25, y: -7, z: 9 },
     { x: 25, y: -8, z: 10 },
-    { x: 25, y: -9, z: 11 },
     { x: 25, y: -10, z: 12 },
 
-    { x: 24, y: -10, z: 13 },
     { x: 23, y: -10, z: 14 },
-    { x: 22, y: -10, z: 15 },
     { x: 21, y: -10, z: 16 },
     { x: 20, y: -10, z: 17 },
 
