@@ -161,8 +161,8 @@ class Scene {
     if (!document.querySelector("#transparencyCheckbox").checked) this.gl.disable(this.gl.BLEND);
     else this.gl.enable(this.gl.BLEND);
     this.gl.enable(this.gl.CULL_FACE);
-    this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
     this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
+    // this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
 
     this.moveObjects();
     const shered = this.camera.getSharedUniforms(this.light);

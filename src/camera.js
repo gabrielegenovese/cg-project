@@ -203,7 +203,7 @@ class Camera {
 
   //Set Camera event listeners
   static setCameraControls(canvas, camera) {
-    var moveCameraStart = "mousedown touchstart";
+    var moveCameraStart = "mousedown";
     moveCameraStart.split(" ").forEach((e) => {
       canvas.addEventListener(e, function (event) {
         event.preventDefault();
@@ -213,7 +213,7 @@ class Camera {
       });
     });
 
-    var moveCameraEnd = "mouseup touchend";
+    var moveCameraEnd = "mouseup";
     moveCameraEnd.split(" ").forEach((e) => {
       canvas.addEventListener(e, function (event) {
         event.preventDefault();
@@ -221,7 +221,7 @@ class Camera {
       });
     });
 
-    var moveCameraMove = "mousemove touchmove";
+    var moveCameraMove = "mousemove";
     moveCameraMove.split(" ").forEach((e) => {
       canvas.addEventListener(e, function (event) {
         event.preventDefault();

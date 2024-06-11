@@ -50,8 +50,10 @@ async function loadAllObjs(scene, coinPosList, cubesPos) {
   // add cubes
   var cubeInfo = { basePath: "objs/cube/redcube" };
   cubeInfo = await fetchObjAndMtl(cubeInfo);
+  var glassInfo = { basePath: "objs/cube/glass" };
+  glassInfo = await fetchObjAndMtl(glassInfo);
   for (const pos of cubesPos) {
-    await scene.addObject(new ObjectClass("cube", pos, cubeInfo));
+    await scene.addObject(new ObjectClass("cube", pos, Math.random() > 0.5 ? cubeInfo : glassInfo));
   }
 }
 
