@@ -138,6 +138,12 @@ class Scene {
         audio.pause();
       }
     });
+
+    document.getElementById("docsBtn").addEventListener("click", function () {
+      var now = window.location;
+      window.location.href = now + "docs";
+    });
+    docsBtn;
   }
 
   //Add an object to the environment after loading its mesh
