@@ -1,11 +1,314 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
   <head>
     <meta charset="UTF-8" />
+    <link rel="icon" type="image/x-icon" href="./assets/favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Documentation</title>
+    <title>Project Documentation</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@4.11.1/dist/full.min.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      :root {
+        --tw-bg-opacity: 1;
+        --tw-text-opacity: 1;
+        --tw-prose-body: #e5e7eb;
+        --tw-prose-headings: #d1d5db;
+        --tw-prose-lead: #9ca3af;
+        --tw-prose-links: #3b82f6;
+        --tw-prose-bold: #ffffff;
+        --tw-prose-counters: #d1d5db;
+        --tw-prose-bullets: #9ca3af;
+        --tw-prose-hr: #4b5563;
+        --tw-prose-quotes: #d1d5db;
+        --tw-prose-quote-borders: #4b5563;
+        --tw-prose-captions: #9ca3af;
+        --tw-prose-code: #ffffff;
+        --tw-prose-pre-code: #e5e7eb;
+        --tw-prose-pre-bg: #1f2937;
+        --tw-prose-th-borders: #4b5563;
+        --tw-prose-td-borders: #4b5563;
+      }
+
+      body {
+        margin: 0;
+        padding: 20px;
+      }
+      .directory,
+      .file {
+        margin-left: 20px;
+      }
+      .directory::before {
+        content: "📁 ";
+      }
+      .file::before {
+        content: "📄 ";
+      }
+    </style>
   </head>
-  <body>
-    Hello world
+  <body class="bg-gray-900 text-gray-300 p-2">
+    <h1 class="max-w-4xl mx-auto py-2 text-4xl font-bold text-gray-100">
+      Computer Graphics Project Documentation
+    </h1>
+    <!-- Introduction -->
+    <div class="max-w-4xl mx-auto py-16">
+      <div class="bg-gray-800 p-8 rounded-lg shadow-lg">
+        <h2 class="text-3xl font-bold mb-4 text-gray-100">Introduction</h2>
+        <img
+          class="w-full h-38 object-cover rounded-lg mb-6"
+          src="./assets/webapp-screen.jpg"
+          alt="Post image"
+        />
+        <div class="prose prose-lg prose-dark max-w-none mb-2">
+          <p class="mb-2">
+            This document presents the project for the Computer Graphics course at the University of
+            Bologna for the academic year 2023/24. The project aims to create an interactive 3D
+            application composed of at least one main polygonal object (using the Wavefront OBJ
+            format). Additionally, appropriate scenography is required by lighting and texturing the
+            scene objects.
+          </p>
+          <div class="text-lg font-bold mb-2">Project Description</div>
+          <p class="mb-2">
+            The main idea of the project is to create a small interactive parkour video game, where
+            the main object is a ball that, through user commands using the keyboard, must collect
+            the 3 coins scattered throughout the scenography. Consequently, the work was divided
+            into two main parts: the creation or modification and subsequent rendering of the 3D
+            objects using Blender and WebGL, and the development of the interaction logic with the
+            user and objects (movements, ball rotation, jumping, collision with objects, etc...).
+          </p>
+          <div class="text-lg font-bold mb-2">Project Structure</div>
+          <div class="directory">docs</div>
+          <div class="directory">
+            libs
+            <div class="file">m4.js</div>
+            <div class="file">webgl-utils.js</div>
+          </div>
+          <div class="directory">
+            objs
+            <div class="directory">ball</div>
+            <div class="directory">coin</div>
+            <div class="directory">cube</div>
+            <div class="directory">floor</div>
+            <div class="directory">skybox</div>
+            <div class="directory">tree</div>
+            <div class="file">undertale_start_menu.mp3</div>
+          </div>
+          <div class="directory">
+            src
+            <div class="file">ball.js</div>
+            <div class="file">camera.js</div>
+            <div class="file">const.js</div>
+            <div class="file">light.js</div>
+            <div class="file">objClass.js</div>
+            <div class="file">objLoader.js</div>
+            <div class="file">scene.js</div>
+          </div>
+          <div class="file">index.html</div>
+          <div class="file">main.js</div>
+          <div class="file">README.md</div>
+        </div>
+        There are 4 main folders:
+        <ul class="list-disc mr-4">
+          <li>docs: folder containing this documentation;</li>
+          <li>libs: contains the libraries used in the project;</li>
+          <li>
+            objs: folder containing all the polygonal objects, their textures, and the sounds used
+            in the project;
+          </li>
+          <li>src: the source code of the project written in Javascript.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 3D Objects -->
+    <div class="max-w-4xl mx-auto py-16">
+      <div class="bg-gray-800 p-8 rounded-lg shadow-lg">
+        <h1 class="text-4xl font-bold mb-4 text-gray-100">3D Objects</h1>
+        <div class="mb-2">
+          The project renders 5 main polygonal objects, some of which have variations. All obj and
+          mtl files of the objects are present in the objs folder.
+        </div>
+        <div class="prose prose-lg prose-dark max-w-none">
+          <div class="text-lg font-bold mb-2">Floor</div>
+          <img
+            class="w-full h-38 object-cover rounded-lg mb-6"
+            src="./assets/obj_floor.jpg"
+            alt="Floor image"
+          />
+          <p class="mb-2">
+            The files for the floor are located in the floor folder. The object is a simple plane to
+            which a grass texture has been applied using the grass.jpg file.
+          </p>
+
+          <div class="text-lg font-bold mb-2">Tree</div>
+          <img
+            class="w-full h-38 object-cover rounded-lg mb-6"
+            src="./assets/obj_tree.jpg"
+            alt="Tree image"
+          />
+          <p class="mb-2">
+            The tree object was downloaded from the website
+            <a class="link-primary" href="https://free3d.com">free3d.com</a>, but the
+            <span class="italic">Decimate</span> modifier was applied to reduce the complexity of
+            the object (necessary to lower the file size). Additionally, the color of the applied
+            material was modified to make it more visible in the scenography.
+          </p>
+
+          <div class="text-lg font-bold mb-2">Cube</div>
+          <img
+            class="w-full h-38 object-cover rounded-lg mb-6"
+            src="./assets/obj_cubes.jpg"
+            alt="Cubes image"
+          />
+          <div class="mb-2">
+            The cube object has 3 variants:
+
+            <ul class="list-disc">
+              <li>propic cube: a texture with my face was applied</li>
+              <li>glass cube: a transparent material was added</li>
+              <li>
+                red cube: downloaded from
+                <a class="link-primary" href="https://free3d.com">free3d.com</a>
+              </li>
+            </ul>
+          </div>
+
+          <div class="text-lg font-bold mb-2">Coin</div>
+          <img
+            class="w-full h-38 object-cover rounded-lg mb-6"
+            src="./assets/obj_coin.jpg"
+            alt="Coin image"
+          />
+          <p class="mb-2">
+            The coin object was entirely created from scratch for the project. The
+            <span class="italic">uv-mapping</span> functionality was used to generate the texture
+            image, which was then colored as desired.
+          </p>
+
+          <div class="text-lg font-bold mb-2">Ball</div>
+          <img
+            class="w-full h-38 object-cover rounded-lg mb-6"
+            src="./assets/obj_ball.jpg"
+            alt="Ball image"
+          />
+          <p class="mb-2">The ball object is a simple 3D sphere to which a texture is applied.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- User Interface -->
+    <div class="max-w-4xl mx-auto py-16">
+      <div class="bg-gray-800 p-8 rounded-lg shadow-lg">
+        <h1 class="text-4xl font-bold mb-4 text-gray-100">User Interface</h1>
+        <div class="mb-2">
+          The user interface consists of the canvas, the "Commands" section, and the settings
+          section. The commands section not only displays the keys to move the ball but also makes
+          them interactive on mobile devices through the use of
+          <span class="italic">touch</span> events. Users can interact with the mouse to move the
+          camera view or use the scroll wheel to adjust the FOV. In the settings section, users can
+          modify the FOV, adjust the light positions, and enable or disable transparency and sounds.
+          There is also a button to view the canvas in fullscreen mode. Additionally, it displays
+          the number of collected coins and the time taken to collect all the coins. The application
+          will show a modal windown for the loading fase and after the completion of the game.
+        </div>
+        <div class="flex justify-center">
+          <img
+            class="w-64 object-cover rounded-lg mb-6"
+            src="./assets/mobile.jpg"
+            alt="Mobile view"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- Source code -->
+    <div class="max-w-4xl mx-auto py-16">
+      <div class="bg-gray-800 p-8 rounded-lg shadow-lg">
+        <h1 class="text-4xl font-bold mb-4 text-gray-100">Source code</h1>
+        <div class="mb-2">
+          Below are described the functionalities of the JavaScript modules and the main implemented
+          features.
+        </div>
+        <ul class="menu bg-base-200 w-full rounded-box">
+          <li class="menu-title">Modules</li>
+          <!-- main.js -->
+          <li class="mb-2">
+            <a class="flex">
+              <pre class="mr-2 w-3/12"><code>main.js</code></pre>
+              <div class="w-9/12">
+                Main module of the project. Download the models of the objects, initialize the
+                objects and their positions. Initialize the scene, passing the position of all the
+                cubes and coins present. Start the rendering process.
+              </div>
+            </a>
+          </li>
+          <!-- scene.js -->
+          <li class="mb-2">
+            <a class="flex">
+              <pre class="mr-2 w-3/12"><code>scene.js</code></pre>
+              <div class="w-9/12">
+                Create the objects to handle the camera, lights, and the ball. Render all the
+                objects in the scene. Create and render the Skybox.
+              </div>
+            </a>
+          </li>
+          <!-- objLoader.js -->
+          <li class="mb-2">
+            <a class="flex">
+              <pre class="mr-2 w-3/12"><code>objLoader.js</code></pre>
+              <div class="w-9/12">Parse the downloaded OBJ and MTL files.</div>
+            </a>
+          </li>
+          <!-- objClass.js -->
+          <li class="mb-2">
+            <a class="flex">
+              <pre class="mr-2 w-3/12"><code>objClass.js</code></pre>
+              <div class="w-9/12">Manage the loading of the mesh and its rendering.</div>
+            </a>
+          </li>
+          <!-- light.js -->
+          <li class="mb-2">
+            <a class="flex">
+              <pre class="mr-2 w-3/12"><code>light.js</code></pre>
+              <div class="w-9/12">Manage the position and settings of the lights.</div>
+            </a>
+          </li>
+          <!-- const.js -->
+          <li class="mb-2">
+            <a class="flex">
+              <pre class="mr-2 w-3/12"><code>const.js</code></pre>
+              <div class="w-9/12">
+                Contains default values for some settings and objects. Also includes the fragment
+                shader and vertex shader used for the main scene.
+              </div>
+            </a>
+          </li>
+          <!-- camera.js -->
+          <li class="mb-2">
+            <a class="flex">
+              <pre class="mr-2 w-3/12"><code>camera.js</code></pre>
+              <div class="w-9/12">
+                Manage the position and movements of the camera. Create the Shared Uniforms useful
+                for rendering.
+              </div>
+            </a>
+          </li>
+          <!-- ball.js -->
+          <li class="mb-2">
+            <a class="flex">
+              <pre class="mr-2 w-3/12"><code>ball.js</code></pre>
+              <div class="w-9/12">
+                Manage the position and physics of the ball's movements (velocity, acceleration,
+                rotation, friction, jumping, gravity). Control and handle collisions with edges,
+                cubes, and coins.
+              </div>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
   </body>
 </html>
