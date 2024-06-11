@@ -143,7 +143,6 @@ class Scene {
       var now = window.location;
       window.location.href = now + "docs";
     });
-    docsBtn;
   }
 
   //Add an object to the environment after loading its mesh
