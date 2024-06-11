@@ -6,9 +6,9 @@ Project for the Computer Graphics Course yy. 2023/2024 at Alma Mater Studiorum -
 
 Implentare:
 
+- modifica redcube
+- aggiungi freccia texturizzata
 - documentazione
-- cubo con mia faccia
-- test mobile
 
 ## How to run
 

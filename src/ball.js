@@ -243,7 +243,7 @@ class Ball {
     for (const obj of this.objList) {
       const name = obj.getName();
       const pos = obj.getPosition();
-      if (name == "cube") this.checkCubeCollition(camera, pos, speedX, speedY, speedZ);
+      if (name.startsWith("cube")) this.checkCubeCollition(camera, pos, speedX, speedY, speedZ);
       if (name.startsWith("coin")) this.checkCoinsCollition(obj);
     }
   }
@@ -305,7 +305,7 @@ class Ball {
 
     for (const obj of this.objList) {
       const name = obj.getName();
-      if (name == "cube") {
+      if (name.startsWith("cube")) {
         const cubePos = obj.getPosition();
 
         function isBallOnTopCube(pos1, pos2) {
@@ -314,7 +314,7 @@ class Ball {
             pos1.x >= pos2.x - APPROX &&
             pos1.y <= pos2.y + APPROX &&
             pos1.y >= pos2.y - APPROX &&
-            pos1.z <= pos2.z + 1.3 &&
+            pos1.z <= pos2.z + 1.1 &&
             pos1.z >= pos2.z + 0.1
           );
         }

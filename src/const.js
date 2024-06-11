@@ -1,5 +1,5 @@
 const APPROX = 1;
-const DEFLIGHTPOS = { x: -50, y: 100, z: 350 };
+const DEFLIGHTPOS = { x: -330, y: -340, z: 780 };
 const DEFLIGHTDIR = { x: -1, y: 3, z: 5 };
 const LIMITX = { lower: -40, upper: 40 };
 const LIMITY = { lower: -40, upper: 40 };

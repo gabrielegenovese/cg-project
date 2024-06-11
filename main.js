@@ -27,7 +27,7 @@ async function loadAllObjs(scene, coinPosList, cubesPos) {
   // add trees
   var treeInfo = { basePath: "objs/tree/birch_tree" };
   treeInfo = await fetchObjAndMtl(treeInfo);
-  for (let i = 0; i < 30; i++) {
+  for (let i = 0; i < 50; i++) {
     await scene.addObject(
       new ObjectClass(
         "tree",
@@ -55,6 +55,12 @@ async function loadAllObjs(scene, coinPosList, cubesPos) {
   for (const pos of cubesPos) {
     await scene.addObject(new ObjectClass("cube", pos, Math.random() > 0.5 ? cubeInfo : glassInfo));
   }
+
+  var propicInfo = { basePath: "objs/cube/propic" };
+  propicInfo = await fetchObjAndMtl(propicInfo);
+  await scene.addObject(
+    new ObjectClass("cube_propic", { x: 12, y: 19, z: 8 }, propicInfo)
+  );
 }
 
 async function main() {
@@ -75,7 +81,6 @@ async function main() {
     { x: 12, y: 10, z: 8 },
     { x: 12, y: 13, z: 8 },
     { x: 12, y: 16, z: 8 },
-    { x: 12, y: 19, z: 8 },
     // second coin
     { x: 21, y: -5, z: 2 },
     { x: 23, y: -5, z: 4 },

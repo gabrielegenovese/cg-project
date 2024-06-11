@@ -38,16 +38,19 @@ class Camera {
       updateCamera: true,
     };
 
+    document.getElementById("fovVal").innerHTML = 70;
     //Set the listeners for the camera
     document.getElementById("zoomCamera").addEventListener(
       "input",
       function (event) {
+        document.getElementById("fovVal").innerHTML = event.target.value;
         this.setFov(event.target.value);
       }.bind(this)
     );
 
     document.getElementById("defaultFovButton").onclick = function () {
       document.getElementById("zoomCamera").value = 70;
+      document.getElementById("fovVal").innerHTML = 70;
       this.setFov(4010); //Equivalent to 70 rad
     }.bind(this);
   }
@@ -80,57 +83,6 @@ class Camera {
 
   setCameraPosition(position) {
     this.position = position;
-  }
-
-  setDefaultAngle() {
-    this.movement = {
-      delta: {
-        x: 0,
-        y: 0,
-      },
-      angle: {
-        xy: this.defaultAngle.xy,
-        xz: this.defaultAngle.xz,
-      },
-      dragging: false,
-      updateCamera: true,
-    };
-  }
-
-  setUpCamera() {
-    this.setRadius(30);
-    this.movement = {
-      delta: {
-        x: 0,
-        y: 0,
-      },
-      angle: {
-        xy: -Math.PI,
-        xz: 1.5,
-      },
-      dragging: false,
-      updateCamera: true,
-    };
-  }
-
-  setRearCamera() {
-    this.setRadius(10);
-    this.movement = {
-      delta: {
-        x: 0,
-        y: 0,
-      },
-      angle: {
-        xy: -Math.PI,
-        xz: 0.1,
-      },
-      dragging: false,
-      updateCamera: true,
-    };
-  }
-
-  setRadius(radius) {
-    this.radius = radius;
   }
 
   getSharedUniforms(light) {
@@ -187,20 +139,6 @@ class Camera {
     }
   }
 
-  resetCamera() {
-    this.movement.dragging = false;
-    this.movement.angle.xy = this.defaultAngle.xy;
-    this.movement.angle.xz = this.defaultAngle.xz;
-    this.movement.updateCamera = true;
-    var fov = 70;
-    this.setFov(radToDeg(fov));
-    document.getElementById("zoomCamera").value = fov;
-    this.setRadius(50);
-    this.rearCamera = false;
-    this.upCamera = false;
-    this.moveCamera();
-  }
-
   //Set Camera event listeners
   static setCameraControls(canvas, camera) {
     var moveCameraStart = "mousedown";
@@ -243,6 +181,7 @@ class Camera {
       if ((delta > 0 && fov < 100) || (delta < 0 && fov > 5)) {
         fov += delta;
       }
+      document.getElementById("fovVal").innerHTML = fov;
       document.getElementById("zoomCamera").value = fov;
       camera.setFov(fov);
     });

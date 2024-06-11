@@ -1,4 +1,4 @@
- class Light {
+class Light {
   constructor() {
     this.position = structuredClone(DEFLIGHTPOS);
     this.direction = structuredClone(DEFLIGHTDIR);
@@ -9,18 +9,21 @@
       "input",
       function (event) {
         this.setPosition("x", event.target.value);
+        document.getElementById("xVal").innerHTML = event.target.value;
       }.bind(this)
     );
     document.getElementById("yLight").addEventListener(
       "input",
       function (event) {
         this.setPosition("y", event.target.value);
+        document.getElementById("yVal").innerHTML = event.target.value;
       }.bind(this)
     );
     document.getElementById("zLight").addEventListener(
       "input",
       function (event) {
         this.setPosition("z", event.target.value);
+        document.getElementById("zVal").innerHTML = event.target.value;
       }.bind(this)
     );
 
@@ -32,8 +35,11 @@
     const y = DEFLIGHTPOS.y;
     const z = DEFLIGHTPOS.z;
     document.getElementById("xLight").value = x;
+    document.getElementById("xVal").innerHTML = x;
     document.getElementById("yLight").value = y;
+    document.getElementById("yVal").innerHTML = y;
     document.getElementById("zLight").value = z;
+    document.getElementById("zVal").innerHTML = z;
     this.setPosition("x", x);
     this.setPosition("y", y);
     this.setPosition("z", z);
