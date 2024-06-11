@@ -165,7 +165,6 @@
 
       if (!handler) {
         // If the keyword does not match any function, log a warning and continue
-        console.warn("unhandled keyword:", keyword, "at line", lineNo + 1);
         continue;
       }
 
@@ -261,7 +260,6 @@
       const handler = keywords[keyword];
 
       if (!handler) {
-        console.warn("unhandled keyword:", keyword);
         continue;
       }
 

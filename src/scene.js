@@ -90,13 +90,13 @@ class Scene {
       // Upload the canvas to the cubemap face.
       const level = 0;
       const internalFormat = this.gl.RGBA;
-      const width = 2048;
-      const height = 2048;
+      // const width = 2048;
+      // const height = 2048;
       const format = this.gl.RGBA;
       const type = this.gl.UNSIGNED_BYTE;
 
       // setup each face so it's immediately renderable
-      this.gl.texImage2D(target, level, internalFormat, width, height, 0, format, type, null);
+      // this.gl.texImage2D(target, level, internalFormat, width, height, 0, format, type, null);
 
       // Asynchronously load an image
       const image = new Image();
@@ -110,7 +110,7 @@ class Scene {
         gl.generateMipmap(gl.TEXTURE_CUBE_MAP);
       });
     });
-    this.gl.generateMipmap(this.gl.TEXTURE_CUBE_MAP);
+    // this.gl.generateMipmap(this.gl.TEXTURE_CUBE_MAP);
     this.gl.texParameteri(
       this.gl.TEXTURE_CUBE_MAP,
       this.gl.TEXTURE_MIN_FILTER,
