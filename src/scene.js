@@ -90,13 +90,14 @@ class Scene {
       // Upload the canvas to the cubemap face.
       const level = 0;
       const internalFormat = this.gl.RGBA;
-      // const width = 2048;
-      // const height = 2048;
+      const width = 1024;
+      const height = 1024;
       const format = this.gl.RGBA;
       const type = this.gl.UNSIGNED_BYTE;
 
       // setup each face so it's immediately renderable
-      // this.gl.texImage2D(target, level, internalFormat, width, height, 0, format, type, null);
+      // se al posto di null si inserisce questo: new Uint8Array(1024 * 1024 * 4) fixa il warning ma va più lento
+      this.gl.texImage2D(target, level, internalFormat, width, height, 0, format, type, new Uint8Array(1024 * 1024 * 4));
 
       // Asynchronously load an image
       const image = new Image();
@@ -106,11 +107,11 @@ class Scene {
         const canvas = document.querySelector(canvasName);
         var gl = canvas.getContext("webgl2");
         gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture);
-        gl.texImage2D(target, level, internalFormat, format, type, image);
+        gl.texImage2D(target, level, internalFormat, width, height, 0, format, type, image);
         gl.generateMipmap(gl.TEXTURE_CUBE_MAP);
       });
     });
-    // this.gl.generateMipmap(this.gl.TEXTURE_CUBE_MAP);
+    this.gl.generateMipmap(this.gl.TEXTURE_CUBE_MAP);
     this.gl.texParameteri(
       this.gl.TEXTURE_CUBE_MAP,
       this.gl.TEXTURE_MIN_FILTER,
