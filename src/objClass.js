@@ -147,7 +147,7 @@ class ObjectClass {
       u_world = m4.yRotate(u_world, this.start_rot);
     }
     if (this.name == "cube_propic") {
-      u_world = m4.xRotate(u_world, 1.5);
+      // u_world = m4.xRotate(u_world, 1.5);
     }
     if (this.rotation) {
       if (this.rotation.x != 0) {
